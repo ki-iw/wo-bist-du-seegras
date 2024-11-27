@@ -2,7 +2,7 @@
 
 install: ## Install the project dependencies, pre-commit hooks and Jupyter notebook filters.
 	@echo "🏗️ Installing project dependencies"
-	@poetry install	
+	@poetry install
 	@echo "🪐 Installing Jupyter cleaner"
 	@git config --local filter.jupyter.smudge cat
 	@echo "🪝 Installing pre-commit hooks"
@@ -10,7 +10,7 @@ install: ## Install the project dependencies, pre-commit hooks and Jupyter noteb
 	@echo "🎉 Done"
 
 format: ## Format all project files and sort imports.
-	@echo "🪄 Formatting files" 
+	@echo "🪄 Formatting files"
 	@poetry run black .
 	@poetry run ruff --select I --fix .
 

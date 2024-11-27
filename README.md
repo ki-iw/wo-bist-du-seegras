@@ -29,7 +29,7 @@ To get started, let's create a Conda environment, and install dependencies into 
     ```bash
     $ make install
     ```
-1. Lastly, run the project 
+1. Lastly, run the project
     ```bash
     $ python -m zug_seegras
     ```
