@@ -98,11 +98,9 @@ class SeabagEnsemble(nn.Module):
         super().__init__()
         self.model_1 = model_1.to(device)
         self.model_2 = model_2.to(device)
-        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         output_1 = self.model_1(x)
         output_2 = self.model_2(x)
 
-        output = (output_1 + output_2) / 2
-        return self.softmax(output)
+        return (output_1 + output_2) / 2
