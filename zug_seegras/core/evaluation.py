@@ -9,10 +9,13 @@ class Evaluator:
         self.model.eval()
 
     @staticmethod
-    def calculate_accuracy(labels: torch.Tensor, predictions: torch.Tensor) -> float:
+    def calculate_accuracy(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
+        labels = labels.to(device)
+        predictions = predictions.to(device)
+
         if labels.size(0) != predictions.size(0):
             raise ValueError("Tensor size mismatch!")  # noqa: TRY003
 
-        correct = (labels == predictions).sum().item()
+        correct = torch.sum(labels == predictions).item()
         total = labels.size(0)
         return correct / total
