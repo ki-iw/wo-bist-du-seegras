@@ -14,10 +14,14 @@ def evaluator_fixture():
 
 @pytest.mark.parametrize(
     "labels, predictions, want",
-    [
+    [  # Binary
         (torch.tensor([0, 1, 0, 1]), torch.tensor([0, 1, 0, 1]), 1.0),
         (torch.tensor([0, 1, 0, 1]), torch.tensor([1, 0, 0, 1]), 0.5),
         (torch.tensor([0, 1, 0, 1]), torch.tensor([1, 0, 1, 0]), 0.0),
+        # Multi-class
+        (torch.tensor([0, 1, 2, 3]), torch.tensor([0, 2, 2, 3]), 0.75),
+        (torch.tensor([0, 1, 2, 3]), torch.tensor([0, 1, 2, 3]), 1.0),
+        (torch.tensor([0, 1, 2, 3]), torch.tensor([3, 2, 1, 0]), 0.0),
     ],
 )
 def test_calculate_accuracy_happy_case(labels, predictions, want):
