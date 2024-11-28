@@ -50,10 +50,10 @@ class Evaluator:
 
         return model
 
-    def _load_state_dict(self, weights_path: str):
+    def _load_state_dict(self, model, weights_path: str):
         try:
             state_dict = torch.load(weights_path, map_location=self.device, weights_only=True)
-            self.model.load_state_dict(state_dict, strict=False)
+            return model.load_state_dict(state_dict, strict=False)
         except Exception as e:
             raise ValueError(f"Failed to load model weights from '{weights_path}'") from e  # noqa: TRY003
 

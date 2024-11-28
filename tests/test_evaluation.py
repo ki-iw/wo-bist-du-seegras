@@ -1,15 +1,17 @@
+import tempfile
+
 import pytest
 import torch
 import torch.nn as nn
 
+from zug_seegras.core.classification_models import BinaryResNet18
 from zug_seegras.core.evaluation import Evaluator as e
 
 
 @pytest.fixture
-def evaluator_fixture():
-    model_name = "seafeats"
-    evaluator = e(model_name, None)
-    return evaluator
+def binary_resnet18_fixture():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    return BinaryResNet18(pretrained=True).get_model().to(device)
 
 
 @pytest.mark.parametrize(
@@ -98,3 +100,27 @@ def test_get_model_happy_case():
     got = evaluator.model
 
     assert isinstance(got, nn.Module)
+
+
+def test_evaluator_passed_model_happy_case(binary_resnet18_fixture):
+    evaluator = e(model=binary_resnet18_fixture)
+    got = evaluator.model
+
+    assert isinstance(got, nn.Module)
+    assert got == binary_resnet18_fixture
+
+
+def test_load_state_dict_happy_case(binary_resnet18_fixture):
+    pretrained_model = binary_resnet18_fixture
+
+    with tempfile.NamedTemporaryFile() as temp_file:
+        torch.save(pretrained_model.state_dict(), temp_file.name)
+
+        evaluator = e(model_name="resnet18", weights_path=temp_file.name)
+
+        got = evaluator.model
+        assert isinstance(got, nn.Module)
+
+        pretrained_state_dict = pretrained_model.state_dict()
+        for key in pretrained_state_dict:
+            assert torch.allclose(got.state_dict()[key], pretrained_state_dict[key], atol=1e-5)
