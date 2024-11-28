@@ -1,12 +1,13 @@
 import pytest
 import torch
+import torch.nn as nn
 
 from zug_seegras.core.evaluation import Evaluator as e
 
 
 @pytest.fixture
 def evaluator_fixture():
-    model_name = "bag_of_seegrass"  # Use the model name you want to test with
+    model_name = "seafeats"
     evaluator = e(model_name, None)
     return evaluator
 
@@ -85,4 +86,11 @@ def test_calculate_f1_score_happy_case_device():
 
 def test_get_model_unhappy_case():
     with pytest.raises(ValueError):
-        e.get_model("unsupported_model", torch.device("cpu"))
+        e(model_name="unsupported_model", weights_path=None)
+
+
+def test_get_model_happy_case():
+    evaluator = e(model_name="resnet18", weights_path=None)
+    got = evaluator.model
+
+    assert isinstance(got, nn.Module)

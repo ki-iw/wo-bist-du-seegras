@@ -16,7 +16,7 @@ class BagOfSeagrass:
     def __init__(self, stride: int = 16) -> None:
         self.stride = stride
 
-    def get_seafeats(self, class_list: int = 4) -> nn.Sequential:
+    def get_seafeats(self, weights_path: str, class_list: int = 4) -> nn.Module:
         seafeats = models.resnet18()
         layers = list(seafeats.children())[:-2]
         av_pool = nn.AvgPool2d((16, 16), stride=(self.stride, self.stride), padding=0)
@@ -28,6 +28,8 @@ class BagOfSeagrass:
         layers.append(nn.Dropout(0.15))
         layers.append(nn.Linear(512, class_list))
         seafeats = nn.Sequential(*layers)
+
+        seafeats.load_state_dict(torch.load(weights_path, weights_only=True))
 
         layers_alter_1 = list(seafeats.children())[:8]
         layers_alter_2 = list(seafeats.children())[11:]
@@ -44,9 +46,11 @@ class BagOfSeagrass:
 
         return nn.Sequential(*all_layers)
 
-    def get_seaclips(self) -> nn.Sequential:
+    def get_seaclips(self, weights_path: str) -> nn.Module:
         clip_model_load = models.resnet18()
         clip_model_load.fc = nn.Sequential(nn.Linear(512, 512), nn.ReLU(), nn.Dropout(0.15), nn.Linear(512, 4))
+
+        clip_model_load.load_state_dict(torch.load(weights_path, weights_only=True))
 
         all_layers = list(clip_model_load.children())
         clip_model_pool = all_layers[:-2]

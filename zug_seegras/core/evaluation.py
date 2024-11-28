@@ -1,32 +1,54 @@
+from typing import Optional
+
 import torch
+import torch.nn as nn
 from torcheval.metrics.functional import multiclass_f1_score
+
+from zug_seegras.core.bag_of_seagrass import BagOfSeagrass
+from zug_seegras.core.classification_models import BinaryResNet18
 
 
 class Evaluator:
-    def __init__(self, model_name: str, weights_path: str) -> None:
+    def __init__(
+        self,
+        model: Optional[nn.Module] = None,  # noqa: UP007
+        model_name: Optional[str] = None,  # noqa: UP007
+        weights_path: Optional[str] = None,  # noqa: UP007
+    ) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.model = self.get_model(model_name, self.device)
-        self._load_state_dict(weights_path, self.device)
+        if model is not None:
+            self.model = model
+        elif model_name is not None:
+            self.model = self._initialize_model(model_name, weights_path)
+        else:
+            raise ValueError("Either a model or a model_name must be provided.")  # noqa: TRY003
 
-    @classmethod
-    def get_model(cls, model_name: str, device: torch.device):
+        self.model.to(self.device)
+        self.model.eval()
+
+    def _initialize_model(self, model_name: str, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
         model_name = model_name.lower()
-        if model_name == "bag_of_seegrass":
-            # TODO: Implement model
-            model = None
-            raise NotImplementedError("bag_of_seegrass")
+        bag_of_seagrass = BagOfSeagrass()
+
+        if model_name == "seafeats":
+            return bag_of_seagrass.get_seafeats(weights_path)
+        elif model_name == "seaclips":
+            return bag_of_seagrass.get_seaclips(weights_path)
+        elif model_name == "resnet18":
+            model = BinaryResNet18().get_model()
         else:
             raise ValueError(f"Model '{model_name}' not supported.")  # noqa: TRY003
 
-        model.to(device)
-        model.eval()
+        if weights_path:
+            self._load_state_dict(model, weights_path)
+
         return model
 
-    def _load_state_dict(self, weights_path: str, device: torch.device):
+    def _load_state_dict(self, weights_path: str):
         try:
-            state_dict = torch.load(weights_path, map_location=device)
-            self.model.load_state_dict(state_dict)
+            state_dict = torch.load(weights_path, map_location=self.device, weights_only=True)
+            self.model.load_state_dict(state_dict, strict=False)
         except Exception as e:
             raise ValueError(f"Failed to load model weights from '{weights_path}'") from e  # noqa: TRY003
 

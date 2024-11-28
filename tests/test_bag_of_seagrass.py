@@ -1,7 +1,13 @@
+import os
+
 import pytest
 import torch
 
 from zug_seegras.core.bag_of_seagrass import BagOfSeagrass
+
+MODEL_DIR = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models"
+SEAFEATS_WEIGHTS = os.path.join(MODEL_DIR, "SeaFeats.pt")
+SEACLIP_WEIGHTS = os.path.join(MODEL_DIR, "SeaCLIP.pt")
 
 
 @pytest.fixture
@@ -9,28 +15,33 @@ def bag_of_seagrass_fixture():
     return BagOfSeagrass(stride=16)
 
 
-def test_get_seafeats_model_initialization(bag_of_seagrass_fixture):
-    model = bag_of_seagrass_fixture.get_seafeats(class_list=4)
-    assert isinstance(model, torch.nn.Sequential)
+@pytest.fixture
+def seafeats_model(bag_of_seagrass_fixture):
+    return bag_of_seagrass_fixture.get_seafeats(weights_path=SEAFEATS_WEIGHTS)
 
 
-def test_get_seafeats_forward_pass(bag_of_seagrass_fixture):
-    model = bag_of_seagrass_fixture.get_seafeats(class_list=4)
+@pytest.fixture
+def seaclips_model(bag_of_seagrass_fixture):
+    return bag_of_seagrass_fixture.get_seaclips(weights_path=SEACLIP_WEIGHTS)
+
+
+def test_get_seafeats_initialization(seafeats_model):
+    assert isinstance(seafeats_model, torch.nn.Module)
+
+
+def test_get_seafeats_forward_pass(seafeats_model):
     input_tensor = torch.randn(1, 3, 512, 512)
     want = (1, 4)
-    got = model(input_tensor).shape
+    got = seafeats_model(input_tensor).shape
     assert got == want
 
 
-def test_get_seaclips_model_initialization(bag_of_seagrass_fixture):
-    model = bag_of_seagrass_fixture.get_seaclips()
-    assert isinstance(model, torch.nn.Sequential)
+def test_get_seaclips_initialization(seaclips_model):
+    assert isinstance(seaclips_model, torch.nn.Module)
 
 
-def test_get_seaclips_forward_pass(bag_of_seagrass_fixture):
-    model = bag_of_seagrass_fixture.get_seaclips()
+def test_get_seaclips_forward_pass(seaclips_model):
     input_tensor = torch.randn(1, 3, 512, 512)
-
     want = (1, 4)
-    got = model(input_tensor).shape
+    got = seaclips_model(input_tensor).shape
     assert got == want
