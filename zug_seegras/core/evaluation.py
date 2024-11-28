@@ -5,7 +5,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torcheval.metrics.functional import multiclass_f1_score
 
-from zug_seegras.core.bag_of_seagrass import BagOfSeagrass
+from zug_seegras.core.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
 from zug_seegras.core.classification_models import BinaryResNet18
 
 
@@ -33,9 +33,13 @@ class Evaluator:
         bag_of_seagrass = BagOfSeagrass()
 
         if model_name == "seafeats":
-            return bag_of_seagrass.get_seafeats(weights_path)
+            return bag_of_seagrass.get_seafeats()
         elif model_name == "seaclips":
-            return bag_of_seagrass.get_seaclips(weights_path)
+            return bag_of_seagrass.get_seaclips()
+        elif model_name == "seabag_enseble":
+            seafeats_model = bag_of_seagrass.get_seafeats()
+            seaclips_model = bag_of_seagrass.get_seaclips()
+            return SeabagEnsemble(seafeats_model, seaclips_model, self.device)
         elif model_name == "resnet18":
             model = BinaryResNet18().get_model()
         else:
