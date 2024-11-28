@@ -2,6 +2,7 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
+from torch.utils.data import DataLoader
 from torcheval.metrics.functional import multiclass_f1_score
 
 from zug_seegras.core.bag_of_seagrass import BagOfSeagrass
@@ -71,3 +72,28 @@ class Evaluator:
 
         n_classes = int(torch.unique(predictions).size(0))
         return multiclass_f1_score(labels, predictions, num_classes=n_classes).item()
+
+    def run_evaluation(self, dataloader: DataLoader) -> dict:
+        all_labels = []
+        all_predictions = []
+
+        self.model.eval()
+        with torch.no_grad():
+            for batch in dataloader:
+                inputs, labels = batch
+                inputs, labels = inputs.to(self.device), labels.to(self.device)
+
+                outputs = self.model(inputs)
+
+                _, predicted = torch.max(outputs, 1)
+
+                all_labels.append(labels)
+                all_predictions.append(predicted)
+
+        all_labels = torch.cat(all_labels)
+        all_predictions = torch.cat(all_predictions)
+
+        accuracy = self.calculate_accuracy(all_labels, all_predictions, device=self.device)
+        f1_score = self.calculate_f1_score(all_labels, all_predictions, device=self.device)
+
+        return accuracy, f1_score
