@@ -1,4 +1,5 @@
 import torch
+from torcheval.metrics.functional import multiclass_f1_score
 
 
 class Evaluator:
@@ -19,3 +20,11 @@ class Evaluator:
         correct = torch.sum(labels == predictions).item()
         total = labels.size(0)
         return correct / total
+
+    @staticmethod
+    def calculate_f1_score(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
+        labels = labels.to(device)
+        predictions = predictions.to(device)
+
+        n_classes = int(torch.unique(predictions).size(0))
+        return multiclass_f1_score(labels, predictions, num_classes=n_classes).item()
