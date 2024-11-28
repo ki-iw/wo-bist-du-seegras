@@ -9,11 +9,13 @@ class Evaluator:
         self.model = self.get_model(model_name, self.device)
         self._load_state_dict(weights_path, self.device)
 
-    def get_model(self, model_name: str, device=torch.device):
+    @classmethod
+    def get_model(cls, model_name: str, device: torch.device):
         model_name = model_name.lower()
         if model_name == "bag_of_seegrass":
             # TODO: Implement model
             model = None
+            raise NotImplementedError("bag_of_seegrass")
         else:
             raise ValueError(f"Model '{model_name}' not supported.")  # noqa: TRY003
 

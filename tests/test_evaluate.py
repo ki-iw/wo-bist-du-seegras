@@ -4,6 +4,13 @@ import torch
 from zug_seegras.core.evaluation import Evaluator as e
 
 
+@pytest.fixture
+def evaluator_fixture():
+    model_name = "bag_of_seegrass"  # Use the model name you want to test with
+    evaluator = e(model_name, None)
+    return evaluator
+
+
 @pytest.mark.parametrize(
     "labels, predictions, want",
     [
@@ -74,3 +81,8 @@ def test_calculate_f1_score_happy_case_device():
         e.calculate_f1_score(labels, predictions)
     except RuntimeError:
         pytest.fail("Device handling error!")
+
+
+def test_get_model_unhappy_case():
+    with pytest.raises(ValueError):
+        e.get_model("unsupported_model", torch.device("cpu"))
