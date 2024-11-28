@@ -15,10 +15,11 @@ class Lambda(nn.Module):
 
 
 class BagOfSeagrass:
-    def __init__(self, stride: int = 16) -> None:
+    def __init__(self, stride: int = 16, n_classes: int = 4) -> None:
         self.stride = stride
+        self.n_classes = n_classes
 
-    def get_seafeats(self, weights_path: Optional[str] = None, class_list: int = 4) -> nn.Module:  # noqa: UP007
+    def get_seafeats(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
         if weights_path is None:
             weights_path = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models/SeaFeats.pt"
 
@@ -31,7 +32,7 @@ class BagOfSeagrass:
         layers.append(Lambda(lambda x: torch.transpose(x, 1, 2)))
         layers.append(nn.Linear(512, 512))
         layers.append(nn.Dropout(0.15))
-        layers.append(nn.Linear(512, class_list))
+        layers.append(nn.Linear(512, 4))
         seafeats = nn.Sequential(*layers)
 
         seafeats.load_state_dict(torch.load(weights_path, weights_only=True))
@@ -49,7 +50,12 @@ class BagOfSeagrass:
         for layer in layers_alter_2:
             all_layers.append(layer)
 
-        return nn.Sequential(*all_layers)
+        model = nn.Sequential(*all_layers)
+
+        if self.n_classes == 2:
+            model = nn.Sequential(model, Lambda(self._binary_classifier))
+
+        return model
 
     def get_seaclips(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
         if weights_path is None:
@@ -70,7 +76,21 @@ class BagOfSeagrass:
         clip_model_pool.append(Lambda(lambda x: x.squeeze(1)))
         clip_model_pool.append(all_layers[-1])
 
-        return nn.Sequential(*clip_model_pool)
+        model = nn.Sequential(*clip_model_pool)
+
+        if self.n_classes == 2:
+            model = nn.Sequential(model, Lambda(self._binary_classifier))
+
+        return model
+
+    def _binary_classifier(self, logits):
+        if logits.size(1) == 4 and self.n_classes == 2:
+            background_logits = logits[:, 0]
+            target_logits, _ = torch.max(logits[:, 1:], dim=1)
+
+            return torch.cat((background_logits, target_logits), dim=0).unsqueeze(0)
+        else:
+            raise ValueError
 
 
 class SeabagEnsemble(nn.Module):
