@@ -3,7 +3,6 @@ from importlib.metadata import version
 
 from dotenv import load_dotenv
 
-from .core import BaseClass
 from .logger import getLogger
 
 load_dotenv()
@@ -16,6 +15,5 @@ except metadata.PackageNotFoundError:
 del metadata  # optional, avoids polluting the results of dir(__package__)
 
 __all__ = [
-    "BaseClass",
     "getLogger",
 ]
