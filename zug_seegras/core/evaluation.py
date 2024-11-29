@@ -8,6 +8,8 @@ from torcheval.metrics.functional import multiclass_f1_score
 from zug_seegras.core.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
 from zug_seegras.core.classification_models import BinaryResNet18
 
+# from zug_seegras.core.dataset import SeegrasDataset
+
 
 class Evaluator:
     def __init__(
@@ -66,6 +68,7 @@ class Evaluator:
 
     @staticmethod
     def calculate_accuracy(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
+        print(labels, predictions)
         labels = labels.to(device)
         predictions = predictions.to(device)
 
@@ -84,8 +87,8 @@ class Evaluator:
         n_classes = int(torch.unique(predictions).size(0))
         return multiclass_f1_score(labels, predictions, num_classes=n_classes).item()
 
-    def run_evaluation(self, dataset: Dataset) -> dict:
-        dataloader = self._prepare_dataloader(dataset)
+    def run_evaluation(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> dict:
+        dataloader = self._prepare_dataloader(dataset, batch_size, shuffle)
 
         all_labels = []
         all_predictions = []
@@ -110,3 +113,31 @@ class Evaluator:
         f1_score = self.calculate_f1_score(all_labels, all_predictions, device=self.device)
 
         return accuracy, f1_score
+
+
+if __name__ == "__main__":
+    # TODO: Merge feat/dataset
+    """
+    data_path = Path("data")
+
+    video_file = data_path / "input_video" / "trimmed_testvideo.mov"
+    label_json_path = data_path / "input_label" / "default.json"
+    output_frames_dir = data_path / "output"
+
+    dataset = SeegrasDataset(
+        video_file=str(video_file),
+        label_dir=str(label_json_path),
+        output_dir=str(output_frames_dir),
+    )
+
+
+    transforms = Compose([
+        Resize((512, 512)),
+        ToTensor(),
+        Normalize(mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225])
+    ])
+
+    evaluator = Evaluator(model_name="resnet18", transforms=transforms)
+    results = evaluator.run_evaluation(dataset, batch_size=1, shuffle=False)
+    print(f"Results: {results}")
+    """

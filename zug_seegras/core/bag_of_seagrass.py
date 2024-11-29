@@ -88,7 +88,7 @@ class BagOfSeagrass:
             background_logits = logits[:, 0]
             target_logits, _ = torch.max(logits[:, 1:], dim=1)
 
-            return torch.cat((background_logits, target_logits), dim=0).unsqueeze(0)
+            return torch.stack((background_logits, target_logits), dim=1)
         else:
             raise ValueError
 
