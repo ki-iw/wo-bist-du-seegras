@@ -19,6 +19,8 @@ class BagOfSeagrass:
         self.stride = stride
         self.n_classes = n_classes
 
+        self.softmax = nn.Softmax(dim=1)
+
     def get_seafeats(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
         if weights_path is None:
             weights_path = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models/SeaFeats.pt"
@@ -55,6 +57,8 @@ class BagOfSeagrass:
         if self.n_classes == 2:
             model = nn.Sequential(model, Lambda(self._binary_classifier))
 
+        model = nn.Sequential(model, self.softmax)
+
         return model
 
     def get_seaclips(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
@@ -81,6 +85,8 @@ class BagOfSeagrass:
         if self.n_classes == 2:
             model = nn.Sequential(model, Lambda(self._binary_classifier))
 
+        model = nn.Sequential(model, self.softmax)
+
         return model
 
     def _binary_classifier(self, logits):
@@ -98,9 +104,24 @@ class SeabagEnsemble(nn.Module):
         super().__init__()
         self.model_1 = model_1.to(device)
         self.model_2 = model_2.to(device)
+        self.softmax = nn.Softmax(dim=1)
+
+    @staticmethod
+    def normalize_logits(logits):
+        mean = logits.mean()
+        std = logits.std()
+        normalized_logits = (logits - mean) / std
+        if std == 0.0:
+            return torch.zeros_like(logits)
+        else:
+            return normalized_logits
 
     def forward(self, x):
-        output_1 = self.model_1(x)
-        output_2 = self.model_2(x)
+        logits_1 = self.model_1(x)
+        logits_2 = self.model_2(x)
 
-        return (output_1 + output_2) / 2
+        normalized_logits_1 = self.normalize_logits(logits_1)
+        normalized_logits_2 = self.normalize_logits(logits_2)
+
+        combined_logits = (normalized_logits_1 + normalized_logits_2) / 2
+        return self.softmax(combined_logits)
