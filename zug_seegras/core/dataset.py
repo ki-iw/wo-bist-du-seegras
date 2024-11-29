@@ -2,8 +2,9 @@ from pathlib import Path
 from typing import Optional
 
 import cv2
-import torch
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
+from torchvision.transforms.functional import pil_to_tensor
 
 from zug_seegras.core.datumaru_processor import DatumaroProcessor
 from zug_seegras.core.video_processor import VideoProcessor
@@ -48,12 +49,11 @@ class SeegrasDataset(Dataset):
         if image is None:
             raise ValueError(f"Failed to load frame {frame_path}.")  # noqa: TRY003
 
-        if self.transform:
-            image = self.transform(image)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(image)
 
-        image_tensor = torch.tensor(image, dtype=torch.float32).permute(2, 0, 1)
-
-        return image_tensor, label
+        image = self.transform(image) if self.transform else pil_to_tensor(image).float() / 255.0
+        return image, label
 
 
 if __name__ == "__main__":
