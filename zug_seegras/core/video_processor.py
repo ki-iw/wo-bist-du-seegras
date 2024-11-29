@@ -4,6 +4,10 @@ import cv2
 import numpy as np
 import torch
 
+from zug_seegras.logger import getLogger
+
+log = getLogger(__name__)
+
 
 class VideoProcessor:
     def __init__(self, video_file: str, frame_ids: list[int], output_dir: str):
@@ -59,7 +63,7 @@ class VideoProcessor:
                 raise ValueError(f"Frame ID {frame_id} is out of range for video with {total_frames} frames.")  # noqa: TRY003
 
             if self._is_frame_saved(frame_id):
-                print(f"Frame {frame_id} already exists, skipping extraction.")
+                log.debug(f"Frame {frame_id} already exists, skipping extraction.")
                 continue
 
             frame = self._extract_frame(frame_id)

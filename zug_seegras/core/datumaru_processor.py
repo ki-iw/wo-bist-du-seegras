@@ -55,8 +55,3 @@ class DatumaroProcessor:
 
     def get_frame_labels(self) -> tuple[list[int], torch.Tensor]:
         return self.convert_datumaru()
-
-
-if __name__ == "__main__":
-    processor = DatumaroProcessor("data/input_label/default.json")
-    print(processor.get_frame_labels())

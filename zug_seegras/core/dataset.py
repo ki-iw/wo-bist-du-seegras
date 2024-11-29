@@ -3,10 +3,13 @@ from typing import Optional
 
 import cv2
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import DataLoader, Dataset
 
 from zug_seegras.core.datumaru_processor import DatumaroProcessor
 from zug_seegras.core.video_processor import VideoProcessor
+from zug_seegras.logger import getLogger
+
+log = getLogger(__name__)
 
 
 class SeegrasDataset(Dataset):
@@ -65,3 +68,9 @@ if __name__ == "__main__":
         label_dir=str(label_json_path),
         output_dir=str(output_frames_dir),
     )
+
+    data_loader = DataLoader(dataset, batch_size=4, shuffle=True)
+
+    for images, labels in data_loader:
+        log.info(f"Images shape: {images.shape}")
+        log.info(f"Labels: {labels}")
