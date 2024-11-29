@@ -2,7 +2,7 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from torcheval.metrics.functional import multiclass_f1_score
 
 from zug_seegras.core.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
@@ -15,22 +15,25 @@ class Evaluator:
         model: Optional[nn.Module] = None,  # noqa: UP007
         model_name: Optional[str] = None,  # noqa: UP007
         weights_path: Optional[str] = None,  # noqa: UP007
+        n_classes: int = 2,
+        transforms=None,
     ) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.transforms = transforms
 
         if model is not None:
             self.model = model
         elif model_name is not None:
-            self.model = self._initialize_model(model_name, weights_path)
+            self.model = self._initialize_model(model_name, weights_path, n_classes)
         else:
             raise ValueError("Either a model or a model_name must be provided.")  # noqa: TRY003
 
         self.model.to(self.device)
         self.model.eval()
 
-    def _initialize_model(self, model_name: str, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
+    def _initialize_model(self, model_name: str, weights_path: Optional[str] = None, n_classes: int = 2) -> nn.Module:  # noqa: UP007
         model_name = model_name.lower()
-        bag_of_seagrass = BagOfSeagrass()
+        bag_of_seagrass = BagOfSeagrass(n_classes=n_classes)
 
         if model_name == "seafeats":
             return bag_of_seagrass.get_seafeats()
@@ -49,6 +52,10 @@ class Evaluator:
             self._load_state_dict(model, weights_path)
 
         return model
+
+    def _prepare_dataloader(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> DataLoader:
+        dataset.transform = self.transforms
+        return DataLoader(dataset, batch_size, shuffle)
 
     def _load_state_dict(self, model, weights_path: str):
         try:
@@ -77,7 +84,9 @@ class Evaluator:
         n_classes = int(torch.unique(predictions).size(0))
         return multiclass_f1_score(labels, predictions, num_classes=n_classes).item()
 
-    def run_evaluation(self, dataloader: DataLoader) -> dict:
+    def run_evaluation(self, dataset: Dataset) -> dict:
+        dataloader = self._prepare_dataloader(dataset)
+
         all_labels = []
         all_predictions = []
 
