@@ -22,6 +22,9 @@ sample_datumaro_json = {
             "attr": {"frame": 5},
             "annotations": [{"type": "polygon", "id": 5}, {"type": "polygon", "id": 6}],
         },
+        {"id": "frame_000006", "attr": {"frame": 6}, "annotations": []},
+        {"id": "frame_000007", "attr": {"frame": 7}, "annotations": []},
+        {"id": "frame_000008", "attr": {"frame": 8}, "annotations": []},
     ]
 }
 
