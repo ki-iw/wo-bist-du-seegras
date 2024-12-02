@@ -4,7 +4,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from zug_seegras.core.models.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
+from zug_seegras.core.models.bag_of_seagrass import BaseSeagrassModel, SeabagEnsemble, SeaCLIPModel, SeaFeatsModel
 
 torch.manual_seed(123)
 if torch.cuda.is_available():
@@ -17,25 +17,29 @@ SEACLIP_WEIGHTS = os.path.join(MODEL_DIR, "SeaCLIP.pt")
 
 
 @pytest.fixture
-def bag_of_seagrass_fixture():
-    return BagOfSeagrass(stride=16)
-
-
-@pytest.fixture
-def bag_of_seagrass_binary_fixture():
-    return BagOfSeagrass(stride=16, n_classes=2)
-
-
-@pytest.fixture
-def seafeats_model(bag_of_seagrass_fixture):
-    model = bag_of_seagrass_fixture.get_seafeats(weights_path=SEAFEATS_WEIGHTS)
+def seafeats_model():
+    model = SeaFeatsModel(n_classes=4, stride=16, weights_path=SEAFEATS_WEIGHTS)
     model.eval()
     return model
 
 
 @pytest.fixture
-def seaclips_model(bag_of_seagrass_fixture):
-    model = bag_of_seagrass_fixture.get_seaclips(weights_path=SEACLIP_WEIGHTS)
+def seaclips_model():
+    model = SeaCLIPModel(n_classes=4, stride=16, weights_path=SEACLIP_WEIGHTS)
+    model.eval()
+    return model
+
+
+@pytest.fixture
+def seafeats_binary_model():
+    model = SeaFeatsModel(n_classes=2, stride=16, weights_path=SEAFEATS_WEIGHTS)
+    model.eval()
+    return model
+
+
+@pytest.fixture
+def seaclips_binary_model():
+    model = SeaCLIPModel(n_classes=2, stride=16, weights_path=SEACLIP_WEIGHTS)
     model.eval()
     return model
 
@@ -46,20 +50,6 @@ def seabag_ensemble(seafeats_model, seaclips_model):
     ensemble = SeabagEnsemble(model_1=seafeats_model, model_2=seaclips_model, device=device)
     ensemble.eval()
     return ensemble
-
-
-@pytest.fixture
-def seafeats_binary_model(bag_of_seagrass_binary_fixture):
-    model = bag_of_seagrass_binary_fixture.get_seafeats(weights_path=SEAFEATS_WEIGHTS)
-    model.eval()
-    return model
-
-
-@pytest.fixture
-def seaclips_binary_model(bag_of_seagrass_binary_fixture):
-    model = bag_of_seagrass_binary_fixture.get_seaclips(weights_path=SEACLIP_WEIGHTS)
-    model.eval()
-    return model
 
 
 @pytest.fixture
@@ -169,18 +159,18 @@ def test_seabag_ensemble_forward_pass(seafeats_model, seaclips_model, seabag_ens
     ],
 )
 def test_binary_classifier_happy_case(logits, want):
-    got = BagOfSeagrass(n_classes=2)._binary_classifier(logits)
+    got = BaseSeagrassModel(n_classes=2, stride=16)._binary_classifier(logits)
     assert torch.equal(got, want)
 
 
 def test_binary_classifier_unhappy_case_n_classes(logits=torch.tensor([[0.7, 0.1, 0.2, 0.3]])):
     with pytest.raises(ValueError):
-        BagOfSeagrass(n_classes=3)._binary_classifier(logits)
+        BaseSeagrassModel(n_classes=3, stride=16)._binary_classifier(logits)
 
 
 def test_binary_classifier_unhappy_case_logit_length(logits=torch.tensor([[0.7, 0.1, 0.2, 0.3, 0.0]])):
     with pytest.raises(ValueError):
-        BagOfSeagrass(n_classes=2)._binary_classifier(logits)
+        BaseSeagrassModel(n_classes=2, stride=16)._binary_classifier(logits)
 
 
 @torch.no_grad()

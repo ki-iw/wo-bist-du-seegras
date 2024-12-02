@@ -3,14 +3,18 @@ from torchvision import models
 from torchvision.models.resnet import ResNet18_Weights
 
 
-class BinaryResNet18:
+class BinaryResNet18(nn.Module):
     def __init__(self, pretrained: bool = False, n_classes: int = 2):
-        weights = ResNet18_Weights.DEFAULT if pretrained else None
+        super().__init__()
+        self.n_classes = n_classes
+        self.weights = ResNet18_Weights.DEFAULT if pretrained else None
+        self.model = self._build_model()
 
-        self.model = models.resnet18(weights=weights)
+    def _build_model(self):
+        model = models.resnet18(weights=self.weights)
+        num_features = model.fc.in_features
+        model.fc = nn.Linear(num_features, self.n_classes)
+        return model
 
-        num_features = self.model.fc.in_features
-        self.model.fc = nn.Linear(num_features, n_classes)
-
-    def get_model(self):
-        return self.model
+    def forward(self, x):
+        return self.model(x)
