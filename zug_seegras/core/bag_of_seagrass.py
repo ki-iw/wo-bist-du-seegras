@@ -14,14 +14,28 @@ class Lambda(nn.Module):
         return self.lambd(x)
 
 
-class BagOfSeagrass:
-    def __init__(self, stride: int = 16, n_classes: int = 4) -> None:
-        self.stride = stride
+class BaseSeagrassModel(nn.Module):
+    def __init__(self, n_classes: int, stride: int):
+        super().__init__()
         self.n_classes = n_classes
-
+        self.stride = stride
         self.softmax = nn.Softmax(dim=1)
 
-    def get_seafeats(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
+    def _binary_classifier(self, logits):
+        if logits.size(1) == 4 and self.n_classes == 2:
+            background_logits = logits[:, 0]
+            target_logits, _ = torch.max(logits[:, 1:], dim=1)
+            return torch.stack((background_logits, target_logits), dim=1)
+        else:
+            raise ValueError
+
+
+class SeaFeatsModel(BaseSeagrassModel):
+    def __init__(self, n_classes: int = 4, stride: int = 16, weights_path: Optional[str] = None):  # noqa: UP007
+        super().__init__(n_classes, stride)
+        self.model = self._build_model(weights_path)
+
+    def _build_model(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
         if weights_path is None:
             weights_path = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models/SeaFeats.pt"
 
@@ -53,15 +67,21 @@ class BagOfSeagrass:
             all_layers.append(layer)
 
         model = nn.Sequential(*all_layers)
-
-        if self.n_classes == 2:
-            model = nn.Sequential(model, Lambda(self._binary_classifier))
-
-        model = nn.Sequential(model, self.softmax)
-
         return model
 
-    def get_seaclips(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
+    def forward(self, x):
+        x = self.model(x)
+        if self.n_classes == 2:
+            x = self._binary_classifier(x)
+        return self.softmax(x)
+
+
+class SeaCLIPModel(BaseSeagrassModel):
+    def __init__(self, n_classes: int = 4, stride: int = 16, weights_path: Optional[str] = None):  # noqa: UP007
+        super().__init__(n_classes, stride)
+        self.model = self._build_model(weights_path)
+
+    def _build_model(self, weights_path: Optional[str]):  # noqa: UP007
         if weights_path is None:
             weights_path = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models/SeaCLIP.pt"
 
@@ -81,22 +101,13 @@ class BagOfSeagrass:
         clip_model_pool.append(all_layers[-1])
 
         model = nn.Sequential(*clip_model_pool)
-
-        if self.n_classes == 2:
-            model = nn.Sequential(model, Lambda(self._binary_classifier))
-
-        model = nn.Sequential(model, self.softmax)
-
         return model
 
-    def _binary_classifier(self, logits):
-        if logits.size(1) == 4 and self.n_classes == 2:
-            background_logits = logits[:, 0]
-            target_logits, _ = torch.max(logits[:, 1:], dim=1)
-
-            return torch.stack((background_logits, target_logits), dim=1)
-        else:
-            raise ValueError
+    def forward(self, x):
+        x = self.model(x)
+        if self.n_classes == 2:
+            x = self._binary_classifier(x)
+        return self.softmax(x)
 
 
 class SeabagEnsemble(nn.Module):

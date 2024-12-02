@@ -11,7 +11,7 @@ from zug_seegras.core.evaluation import Evaluator as e
 @pytest.fixture
 def binary_resnet18_fixture():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    return BinaryResNet18(pretrained=True).get_model().to(device)
+    return BinaryResNet18(pretrained=True).to(device)
 
 
 @pytest.mark.parametrize(
@@ -95,11 +95,13 @@ def test_get_model_unhappy_case():
         e(model_name="unsupported_model", weights_path=None)
 
 
-def test_get_model_happy_case():
-    evaluator = e(model_name="resnet18", weights_path=None)
-    got = evaluator.model
-
-    assert isinstance(got, nn.Module)
+@pytest.mark.parametrize(
+    "model_name, n_classes",
+    [("seafeats", 4), ("seaclips", 4), ("resnet18", 2), ("seabag_ensemble", 2)],
+)
+def test_model_initialization(model_name, n_classes):
+    evaluator = e(model_name=model_name, n_classes=n_classes)
+    assert isinstance(evaluator.model, nn.Module)
 
 
 def test_evaluator_passed_model_happy_case(binary_resnet18_fixture):
