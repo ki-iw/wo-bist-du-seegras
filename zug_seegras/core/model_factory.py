@@ -41,11 +41,14 @@ class ModelFactory:
         model: nn.Module,
         optimizer: Optional[torch.optim.Optimizer] = None,  # noqa: UP007
         checkpoint_path: str = "checkpoint.pth",
+        epoch: Optional[int] = None,  # noqa: UP007
     ):
         checkpoint = {
             "model_state_dict": model.state_dict(),
             "optimizer_state_dict": optimizer.state_dict() if optimizer else None,
         }
+        if epoch is not None:
+            checkpoint["epoch"] = epoch
         torch.save(checkpoint, checkpoint_path)
 
     def load_checkpoint(
