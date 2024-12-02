@@ -99,7 +99,7 @@ def test_get_model_unhappy_case():
     "model_name, n_classes",
     [("seafeats", 4), ("seaclips", 4), ("resnet18", 2), ("seabag_ensemble", 2)],
 )
-def test_model_initialization(model_name, n_classes):
+def test_model_initialization_integration(model_name, n_classes):
     evaluator = e(model_name=model_name, n_classes=n_classes)
     assert isinstance(evaluator.model, nn.Module)
 
