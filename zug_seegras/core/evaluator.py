@@ -8,8 +8,7 @@ from torcheval.metrics.functional import multiclass_f1_score
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
 from zug_seegras.core.data_loader import SeegrasDataset
-from zug_seegras.core.models.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
-from zug_seegras.core.models.binary_resnet import BinaryResNet18
+from zug_seegras.core.model_factory import ModelFactory
 
 
 class Evaluator:
@@ -17,55 +16,30 @@ class Evaluator:
         self,
         model: Optional[nn.Module] = None,  # noqa: UP007
         model_name: Optional[str] = None,  # noqa: UP007
-        weights_path: Optional[str] = None,  # noqa: UP007
+        checkpoint_path: Optional[str] = None,  # noqa: UP007
         n_classes: int = 2,
         transforms=None,
     ) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.transforms = transforms
 
+        model_factory = ModelFactory(self.device)
+
         if model is not None:
             self.model = model
         elif model_name is not None:
-            self.model = self._initialize_model(model_name, weights_path, n_classes)
+            self.model = model_factory.create_model(model_name=model_name, n_classes=n_classes)
         else:
             raise ValueError("Either a model or a model_name must be provided.")  # noqa: TRY003
 
-        self.model.to(self.device)
+        if checkpoint_path is not None:
+            model_factory.load_checkpoint(self.model, checkpoint_path)
+
         self.model.eval()
-
-    def _initialize_model(self, model_name: str, weights_path: Optional[str] = None, n_classes: int = 2) -> nn.Module:  # noqa: UP007
-        model_name = model_name.lower()
-        bag_of_seagrass = BagOfSeagrass(n_classes=n_classes)
-
-        if model_name == "seafeats":
-            return bag_of_seagrass.get_seafeats()
-        elif model_name == "seaclips":
-            return bag_of_seagrass.get_seaclips()
-        elif model_name == "seabag_ensemble":
-            seafeats_model = bag_of_seagrass.get_seafeats()
-            seaclips_model = bag_of_seagrass.get_seaclips()
-            return SeabagEnsemble(seafeats_model, seaclips_model, self.device)
-        elif model_name == "resnet18":
-            model = BinaryResNet18().get_model()
-        else:
-            raise ValueError(f"Model '{model_name}' not supported.")  # noqa: TRY003
-
-        if weights_path:
-            self._load_state_dict(model, weights_path)
-
-        return model
 
     def _prepare_dataloader(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> DataLoader:
         dataset.transform = self.transforms
         return DataLoader(dataset, batch_size, shuffle)
-
-    def _load_state_dict(self, model, weights_path: str):
-        try:
-            state_dict = torch.load(weights_path, map_location=self.device, weights_only=True)
-            return model.load_state_dict(state_dict, strict=False)
-        except Exception as e:
-            raise ValueError(f"Failed to load model weights from '{weights_path}'") from e  # noqa: TRY003
 
     @staticmethod
     def calculate_accuracy(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
