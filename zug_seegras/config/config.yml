@@ -1,0 +1,27 @@
+model:
+  name: resnet18  # Options: resnet18, seafeats, seaclips, seabag_ensemble
+  pretrained: true
+  num_classes: 2
+
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  epochs: 20
+  optimizer: adam
+  scheduler: step_lr
+  step_size: 5
+  shuffle: true
+
+dataset:
+  name: Seegras
+  video_file: "data/input_video/trimmed_testvideo.mov"
+  label_dir: "data/input_label/default.json"
+  output_dir: "data/output"
+
+
+evaluation:
+  batch_size: 16
+  shuffle: false
+
+checkpoint:
+  dir: "data/model_checkpoints"
