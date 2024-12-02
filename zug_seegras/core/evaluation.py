@@ -41,7 +41,7 @@ class Evaluator:
             return bag_of_seagrass.get_seafeats()
         elif model_name == "seaclips":
             return bag_of_seagrass.get_seaclips()
-        elif model_name == "seabag_enseble":
+        elif model_name == "seabag_ensemble":
             seafeats_model = bag_of_seagrass.get_seafeats()
             seaclips_model = bag_of_seagrass.get_seaclips()
             return SeabagEnsemble(seafeats_model, seaclips_model, self.device)
