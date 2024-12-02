@@ -100,6 +100,43 @@ def test_seabag_ensemble_initialization(seabag_ensemble):
     assert isinstance(seabag_ensemble, nn.Module)
 
 
+@pytest.mark.parametrize(
+    "logits, want",
+    [
+        (
+            torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
+            torch.tensor([[-1.3363, -0.8018, -0.2673], [0.2673, 0.8018, 1.3363]]),
+        ),
+        (
+            torch.tensor([[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]),
+            torch.tensor([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]),
+        ),
+        (
+            torch.tensor([[-2.0, 0.0, 2.0], [-3.0, -1.0, 1.0]]),
+            torch.tensor([[-0.8018, 0.2673, 1.3363], [-1.3363, -0.2673, 0.8018]]),
+        ),
+        (
+            torch.tensor(
+                [
+                    [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
+                    [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]],
+                ]
+            ),
+            torch.tensor(
+                [
+                    [[-0.8935, -0.2978, 0.2978], [0.8935, 1.4892, 2.0849]],
+                    [[-0.8935, -0.8935, -0.8935], [-0.2978, -0.2978, -0.2978]],
+                ]
+            ),
+        ),
+    ],
+)
+def test_normalize_logits(logits, want):
+    result = SeabagEnsemble.normalize_logits(logits)
+    assert torch.allclose(result, want, atol=1e-4), f"Expected {want}, got {result}"
+    assert result.shape == want.shape
+
+
 @torch.no_grad()
 @pytest.mark.parametrize("batch_size", [1, 4])
 def test_seabag_ensemble_forward_pass(seafeats_model, seaclips_model, seabag_ensemble, batch_size):
@@ -109,13 +146,16 @@ def test_seabag_ensemble_forward_pass(seafeats_model, seaclips_model, seabag_ens
     output_1 = seafeats_model(input_tensor)
     output_2 = seaclips_model(input_tensor)
 
-    want_output = (output_1 + output_2) / 2
+    normalized_output_1 = seabag_ensemble.normalize_logits(output_1)
+    normalized_output_2 = seabag_ensemble.normalize_logits(output_2)
+
+    want_output = nn.Softmax(dim=1)((normalized_output_1 + normalized_output_2) / 2)
     want_size = (batch_size, 4)
 
     got = seabag_ensemble(input_tensor)
 
     assert got.shape == want_size
-    assert torch.allclose(got, want_output, atol=1e-4, rtol=1e-3)
+    assert torch.allclose(got, want_output, atol=1e-3)
 
 
 @pytest.mark.parametrize(
