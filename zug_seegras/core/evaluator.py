@@ -61,8 +61,17 @@ class Evaluator:
         n_classes = int(torch.unique(predictions).size(0))
         return multiclass_f1_score(labels, predictions, num_classes=n_classes).item()
 
-    def run_evaluation(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> dict:
-        dataloader = self._prepare_dataloader(dataset, batch_size, shuffle)
+    def run_evaluation(
+        self,
+        dataloader: Optional[DataLoader] = None,  # noqa: UP007
+        dataset: Optional[Dataset] = None,  # noqa: UP007
+        batch_size: int = 1,
+        shuffle: bool = False,
+    ) -> dict:
+        if not dataloader:
+            if not dataset:
+                raise ValueError("Either 'dataloader' or 'dataset' must be provided!")  # noqa: TRY003
+            dataloader = self._prepare_dataloader(dataset, batch_size, shuffle)
 
         all_labels = []
         all_predictions = []
