@@ -4,8 +4,8 @@ import pytest
 import torch
 import torch.nn as nn
 
-from zug_seegras.core.classification_models import BinaryResNet18
-from zug_seegras.core.evaluation import Evaluator as e
+from zug_seegras.core.evaluator import Evaluator as e
+from zug_seegras.core.models.binary_resnet import BinaryResNet18
 
 
 @pytest.fixture

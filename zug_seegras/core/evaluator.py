@@ -1,14 +1,15 @@
+from pathlib import Path
 from typing import Optional
 
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 from torcheval.metrics.functional import multiclass_f1_score
+from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-from zug_seegras.core.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
-from zug_seegras.core.classification_models import BinaryResNet18
-
-# from zug_seegras.core.dataset import SeegrasDataset
+from zug_seegras.core.data_loader import SeegrasDataset
+from zug_seegras.core.models.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
+from zug_seegras.core.models.binary_resnet import BinaryResNet18
 
 
 class Evaluator:
@@ -68,7 +69,6 @@ class Evaluator:
 
     @staticmethod
     def calculate_accuracy(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
-        print(labels, predictions)
         labels = labels.to(device)
         predictions = predictions.to(device)
 
@@ -116,8 +116,6 @@ class Evaluator:
 
 
 if __name__ == "__main__":
-    # TODO: Merge feat/dataset
-    """
     data_path = Path("data")
 
     video_file = data_path / "input_video" / "trimmed_testvideo.mov"
@@ -130,14 +128,10 @@ if __name__ == "__main__":
         output_dir=str(output_frames_dir),
     )
 
+    transforms = Compose(
+        [Resize((512, 512)), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+    )
 
-    transforms = Compose([
-        Resize((512, 512)),
-        ToTensor(),
-        Normalize(mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225])
-    ])
-
-    evaluator = Evaluator(model_name="resnet18", transforms=transforms)
+    evaluator = Evaluator(model_name="seaclips", transforms=transforms)
     results = evaluator.run_evaluation(dataset, batch_size=1, shuffle=False)
     print(f"Results: {results}")
-    """

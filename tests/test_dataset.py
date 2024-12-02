@@ -6,12 +6,12 @@ from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Resize, ToTensor
 
-from zug_seegras.core.dataset import SeegrasDataset
+from zug_seegras.core.data_loader import SeegrasDataset
 
 
 @pytest.fixture
 def mock_datumaro_processor():
-    with patch("zug_seegras.core.dataset.DatumaroProcessor") as MockDatumaroProcessor:
+    with patch("zug_seegras.core.data_loader.DatumaroProcessor") as MockDatumaroProcessor:
         mock_instance = MockDatumaroProcessor.return_value
         mock_instance.get_frame_labels.return_value = ([1, 2], [0, 1])
         yield MockDatumaroProcessor
@@ -19,7 +19,7 @@ def mock_datumaro_processor():
 
 @pytest.fixture
 def mock_video_processor():
-    with patch("zug_seegras.core.dataset.VideoProcessor") as MockVideoProcessor:
+    with patch("zug_seegras.core.data_loader.VideoProcessor") as MockVideoProcessor:
         mock_instance = MockVideoProcessor.return_value
         mock_instance.extract_and_save_frames = MagicMock()
         yield MockVideoProcessor

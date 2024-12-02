@@ -4,7 +4,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from zug_seegras.core.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
+from zug_seegras.core.models.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
 
 torch.manual_seed(123)
 if torch.cuda.is_available():
