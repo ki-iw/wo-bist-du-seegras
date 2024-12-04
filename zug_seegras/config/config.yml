@@ -7,8 +7,9 @@ training:
   batch_size: 32
   learning_rate: 0.001
   epochs: 20
-  optimizer: adam
+  optimizer: Adam
   scheduler: step_lr
+  loss_function: CrossEntropyLoss
   step_size: 5
   shuffle: true
 
