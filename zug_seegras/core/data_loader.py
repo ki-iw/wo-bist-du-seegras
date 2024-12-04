@@ -1,56 +1,31 @@
-from pathlib import Path
 from typing import Optional
 
-import cv2
-from PIL import Image
-from torch.utils.data import Dataset
-from torchvision.transforms.functional import pil_to_tensor
-
-from zug_seegras.core.datumaru_processor import DatumaroProcessor
-from zug_seegras.core.video_processor import VideoProcessor
-from zug_seegras.logger import getLogger
-
-log = getLogger(__name__)
+from torch.utils.data import DataLoader, random_split
+from torchvision.transforms import Compose
 
 
-class SeegrasDataset(Dataset):
-    def __init__(
-        self,
-        video_file: str,
-        label_dir: str,
-        output_dir: str,
-        processor=DatumaroProcessor,
-        transform: Optional[any] = None,  # noqa: UP007
-    ) -> None:
-        self.video_file = video_file
-        self.output_dir = Path(output_dir)
-        self.transform = transform
+def create_dataloaders(
+    dataset_class,
+    video_file: str,
+    label_json_path: str,
+    output_frames_dir: str,
+    transform: Optional[Compose] = None,  # noqa: UP007
+    batch_size: int = 4,
+    train_test_ratio: float = 0.8,
+    shuffle: bool = True,
+) -> tuple[DataLoader, DataLoader, Optional[DataLoader]]:  # noqa: UP007
+    dataset = dataset_class(
+        video_file=video_file,
+        label_dir=label_json_path,
+        output_dir=output_frames_dir,
+        transform=transform,
+    )
 
-        datumaro_processor = processor(label_dir)
-        self.frame_ids, self.labels = datumaro_processor.get_frame_labels()
+    train_size = int(train_test_ratio * len(dataset))
+    test_size = len(dataset) - train_size
+    train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
 
-        self.video_processor = VideoProcessor(
-            video_file=self.video_file, frame_ids=self.frame_ids, output_dir=self.output_dir
-        )
-        self.video_processor.extract_and_save_frames()
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-    def __len__(self):
-        return len(self.frame_ids)
-
-    def __getitem__(self, idx):
-        frame_id = self.frame_ids[idx]
-        label = self.labels[idx]
-
-        frame_path = self.output_dir / Path(self.video_file).stem / f"frame_{frame_id:05d}.jpg"
-        if not frame_path.exists():
-            raise FileNotFoundError(f"Frame {frame_id} could not be found at {frame_path}.")  # noqa: TRY003
-
-        image = cv2.imread(str(frame_path))
-        if image is None:
-            raise ValueError(f"Failed to load frame {frame_path}.")  # noqa: TRY003
-
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = Image.fromarray(image)
-
-        image = self.transform(image) if self.transform else pil_to_tensor(image).float() / 255.0
-        return image, label
+    return train_loader, test_loader
