@@ -13,7 +13,7 @@ def create_dataloaders(
     batch_size: int = 4,
     train_test_ratio: float = 0.8,
     shuffle: bool = True,
-) -> tuple[DataLoader, DataLoader, Optional[DataLoader]]:  # noqa: UP007
+) -> tuple[DataLoader, DataLoader]:
     dataset = dataset_class(
         video_file=video_file,
         label_dir=label_json_path,
