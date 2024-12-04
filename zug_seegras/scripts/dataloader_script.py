@@ -3,7 +3,7 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-from zug_seegras.core.data_loader import SeegrasDataset
+from zug_seegras.core.datasets.seegras import SeegrasDataset
 from zug_seegras.logger import getLogger
 
 log = getLogger(__name__)
