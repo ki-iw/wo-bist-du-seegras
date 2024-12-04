@@ -1,10 +1,11 @@
+import torch
 import torch.nn as nn
 from torchvision import models
 from torchvision.models.resnet import ResNet18_Weights
 
 
 class BinaryResNet18(nn.Module):
-    def __init__(self, pretrained: bool = False, n_classes: int = 2):
+    def __init__(self, pretrained: bool = False, n_classes: int = 1):
         super().__init__()
         self.n_classes = n_classes
         self.weights = ResNet18_Weights.DEFAULT if pretrained else None
@@ -17,4 +18,5 @@ class BinaryResNet18(nn.Module):
         return model
 
     def forward(self, x):
-        return self.model(x)
+        x = self.model(x)
+        return torch.sigmoid(x)

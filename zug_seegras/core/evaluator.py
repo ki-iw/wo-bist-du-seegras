@@ -31,13 +31,9 @@ class Evaluator:
         elif model_name is not None:
             model_factory = ModelFactory(self.device)
             self.model = model_factory.create_model(model_name=model_name, n_classes=n_classes)
-        else:
-            raise ValueError("Either a model or a model_name must be provided.")  # noqa: TRY003
 
         if model_factory and checkpoint_path:
             model_factory.load_checkpoint(self.model, checkpoint_path)
-
-        self.model.eval()
 
     def _prepare_dataloader(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> DataLoader:
         dataset.transform = self.transforms
@@ -82,13 +78,13 @@ class Evaluator:
         all_labels = []
         all_predictions = []
 
-        self.model.eval()
+        model.eval()
         with torch.no_grad():
             for batch in dataloader:
                 inputs, labels = batch
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
 
-                outputs = self.model(inputs)
+                outputs = model(inputs)
 
                 _, predicted = torch.max(outputs, 1)
 
@@ -122,5 +118,5 @@ if __name__ == "__main__":
     )
 
     evaluator = Evaluator(model_name="seaclips", transforms=transforms)
-    results = evaluator.run_evaluation(dataset, batch_size=1, shuffle=False)
-    print(f"Results: {results}")
+    accuracy, f1_score = evaluator.run_evaluation(dataset=dataset, batch_size=1, shuffle=False)
+    print(f"Acc: {accuracy}, F1: {f1_score}")

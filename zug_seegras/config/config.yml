@@ -1,15 +1,15 @@
 model:
   name: resnet18  # Options: resnet18, seafeats, seaclips, seabag_ensemble
   pretrained: true
-  num_classes: 2
+  num_classes: 1
 
 training:
   batch_size: 32
   learning_rate: 0.001
-  epochs: 20
+  num_epochs: 20
   optimizer: Adam
   scheduler: step_lr
-  loss_function: CrossEntropyLoss
+  loss_function: BinaryCrossEntropy
   step_size: 5
   shuffle: true
 
