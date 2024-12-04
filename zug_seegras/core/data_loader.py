@@ -3,7 +3,7 @@ from typing import Optional
 
 import cv2
 from PIL import Image
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import Dataset
 from torchvision.transforms.functional import pil_to_tensor
 
 from zug_seegras.core.datumaru_processor import DatumaroProcessor
@@ -54,23 +54,3 @@ class SeegrasDataset(Dataset):
 
         image = self.transform(image) if self.transform else pil_to_tensor(image).float() / 255.0
         return image, label
-
-
-if __name__ == "__main__":
-    data_path = Path("data")
-
-    video_file = data_path / "input_video" / "trimmed_testvideo.mov"
-    label_json_path = data_path / "input_label" / "default.json"
-    output_frames_dir = data_path / "output"
-
-    dataset = SeegrasDataset(
-        video_file=str(video_file),
-        label_dir=str(label_json_path),
-        output_dir=str(output_frames_dir),
-    )
-
-    data_loader = DataLoader(dataset, batch_size=4, shuffle=True)
-
-    for images, labels in data_loader:
-        log.info(f"Images shape: {images.shape}")
-        log.info(f"Labels: {labels}")

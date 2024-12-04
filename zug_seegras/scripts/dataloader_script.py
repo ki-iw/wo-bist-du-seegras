@@ -1,15 +1,16 @@
 from pathlib import Path
 
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
 from zug_seegras.core.data_loader import SeegrasDataset
-from zug_seegras.core.trainer import Trainer
+from zug_seegras.logger import getLogger
+
+log = getLogger(__name__)
 
 
 def main():
     data_path = Path("data")
-
     video_file = data_path / "input_video" / "trimmed_testvideo.mov"
     label_json_path = data_path / "input_label" / "default.json"
     output_frames_dir = data_path / "output"
@@ -25,18 +26,11 @@ def main():
         transform=transforms,
     )
 
-    train_size = int(0.8 * len(dataset))
-    test_size = len(dataset) - train_size
-    train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
+    data_loader = DataLoader(dataset, batch_size=4, shuffle=True)
 
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
-
-    config_path = "zug_seegras/config/config.yml"
-
-    trainer = Trainer(config_path=config_path, train_loader=train_loader, test_loader=test_loader, checkpoint_path=None)
-
-    trainer.train()
+    for images, labels in data_loader:
+        log.info(f"Images shape: {images.shape}")
+        log.info(f"Labels: {labels}")
 
 
 if __name__ == "__main__":
