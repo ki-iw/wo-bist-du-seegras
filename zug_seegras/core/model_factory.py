@@ -5,7 +5,7 @@ import torch.nn as nn
 
 from zug_seegras.core.models.bag_of_seagrass import SeabagEnsemble, SeaCLIPModel, SeaFeatsModel
 from zug_seegras.core.models.binary_resnet import BinaryResNet18
-from zug_seegras.core.models.groundingDINO import GroundingDinoClassifier
+from zug_seegras.core.models.grounding_dino import GroundingDinoClassifier
 from zug_seegras.logger import getLogger
 
 log = getLogger(__name__)
