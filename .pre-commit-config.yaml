@@ -14,7 +14,7 @@ repos:
     hooks:
       - id: python-unit-tests
         name: seegras unit tests
-        entry: pytest -v -k "not _integration" --cov=zug_seegras/core  tests
+        entry: pytest -v -k "not _integration" -p no:warnings --cov=zug_seegras/core  tests
         pass_filenames: false
         types: [python]
         language: system
