@@ -1,0 +1,14 @@
+# Common settings for all models
+
+dataset:
+  name: Seegras
+  video_file: "data/input_video/trimmed_testvideo.mov"
+  label_dir: "data/input_label/default.json"
+  output_dir: "data/output"
+
+evaluation:
+  batch_size: 16
+  shuffle: false
+
+checkpoint:
+  dir: "data/model_checkpoints"
