@@ -1,0 +1,3 @@
+model:
+  model_name: grounding_dino
+  trainable: false
