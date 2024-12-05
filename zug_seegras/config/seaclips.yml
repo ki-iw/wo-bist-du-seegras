@@ -2,6 +2,8 @@ model:
   model_name: seaclips
   finetune: true
   n_classes: 2
+  trainable: true
+
 
 training:
   batch_size: 32

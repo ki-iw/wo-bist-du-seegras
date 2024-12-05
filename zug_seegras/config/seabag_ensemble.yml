@@ -1,8 +1,7 @@
 model:
-  model_name: seafeats
-  finetune: true
+  model_name: seabag_ensemble
   n_classes: 2
-  trainable: true
+  trainable: false
 
 
 training:

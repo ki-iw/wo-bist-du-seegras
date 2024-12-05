@@ -37,9 +37,14 @@ class Trainer:
         self.evaluator = Evaluator(device=self.device)
 
     def initialize_model(self, checkpoint_path: str):
-        model_config = self.config["model"]
+        model_params = self.config["model"]
 
-        model = self.model_factory.create_model(**model_config)
+        if not model_params["trainable"]:
+            raise ValueError("The model is not trainable!")  # noqa: TRY003
+
+        del model_params["trainable"]
+
+        model = self.model_factory.create_model(**model_params)
 
         if checkpoint_path:
             checkpoint = self.model_factory.load_checkpoint(model, checkpoint_path)

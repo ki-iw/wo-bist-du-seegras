@@ -2,6 +2,7 @@ model:
   model_name: resnet18
   pretrained: true
   n_classes: 1
+  trainable: true
 
 training:
   batch_size: 32
