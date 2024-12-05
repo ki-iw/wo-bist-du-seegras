@@ -35,9 +35,11 @@ class GroundingDinoClassifier:
         return load_model(GroundingDINO_SwinT_OGC.__file__, weights_path, device=self.device)
 
     def to(self, device):
+        # Auxiliary function to keep the rest of the repo consistent.
         pass
 
     def eval(self):
+        # Auxiliary function to keep the rest of the repo consistent.
         pass
 
     def __call__(self, images: torch.Tensor):
