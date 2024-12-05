@@ -39,7 +39,7 @@ class Trainer:
     def initialize_model(self, checkpoint_path: str):
         model_config = self.config["model"]
 
-        model = self.model_factory.create_model(model_name=model_config["name"], n_classes=model_config["num_classes"])
+        model = self.model_factory.create_model(**model_config)
 
         if checkpoint_path:
             checkpoint = self.model_factory.load_checkpoint(model, checkpoint_path)
@@ -65,7 +65,7 @@ class Trainer:
 
     def train(self, n_eval: int = 5):
         num_epochs = self.config["training"]["num_epochs"]
-        model_name = self.config["model"]["name"]
+        model_name = self.config["model"]["model_name"]
         dataset_name = self.config["dataset"]["name"]
         checkpoint_dir = self.config["checkpoint"]["dir"]
 
@@ -100,3 +100,5 @@ class Trainer:
                 checkpoint_path = os.path.join(model_checkpoint_dir, f"{model_name}_{epoch + 1}.pth")
                 self.model_factory.save_checkpoint(self.model, self.optimizer, checkpoint_path, epoch + 1)
                 tqdm.write(f"Model checkpoint saved at {checkpoint_path}")
+
+            self.current_epoch += 1

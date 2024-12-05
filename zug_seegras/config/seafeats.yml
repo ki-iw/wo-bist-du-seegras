@@ -1,7 +1,7 @@
 model:
-  name: seafeats
-  pretrained: true
-  num_classes: 2
+  model_name: seafeats
+  finetune: true
+  n_classes: 2
 
 training:
   batch_size: 32

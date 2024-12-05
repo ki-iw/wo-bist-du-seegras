@@ -74,11 +74,9 @@ class SeaFeatsModel(BaseSeagrassModel):
             all_layers.append(layer)
 
         model = nn.Sequential(*all_layers)
-        print(model)
 
         if self.finetune and self.n_classes == 2:
             model[-1] = nn.Linear(512, 1)
-        print(model)
         return model
 
     def forward(self, x):

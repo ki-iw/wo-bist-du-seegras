@@ -20,15 +20,15 @@ class ModelFactory:
     def __init__(self, device: Optional[torch.device] = None):  # noqa: UP007
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    def create_model(self, model_name: str, n_classes: int = 2) -> nn.Module:
+    def create_model(self, model_name: str, n_classes: int = 2, **kwargs) -> nn.Module:
         model_name = model_name.lower()
 
         if model_name in self.MODEL_REGISTRY:
             model_class = self.MODEL_REGISTRY[model_name]
-            model = model_class(n_classes=n_classes)
+            model = model_class(n_classes=n_classes, **kwargs)
         elif model_name == "seabag_ensemble":
-            sea_feats = SeaFeatsModel(n_classes=n_classes)
-            sea_clip = SeaCLIPModel(n_classes=n_classes)
+            sea_feats = SeaFeatsModel(n_classes=n_classes, **kwargs)
+            sea_clip = SeaCLIPModel(n_classes=n_classes, **kwargs)
             model = SeabagEnsemble(sea_feats, sea_clip, self.device)
         else:
             raise ValueError
