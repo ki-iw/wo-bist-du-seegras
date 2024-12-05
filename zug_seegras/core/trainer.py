@@ -63,7 +63,7 @@ class Trainer:
             return optim.Adam(self.model.parameters(), lr=learning_rate)
         raise NotImplementedError(f"Optimizer '{optimizer_name}' is not implemented.")
 
-    def train(self):
+    def train(self, n_eval: int = 5):
         num_epochs = self.config["training"]["num_epochs"]
         model_name = self.config["model"]["name"]
         dataset_name = self.config["dataset"]["name"]
@@ -93,7 +93,7 @@ class Trainer:
 
             tqdm.write(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {running_loss / len(self.train_loader):.4f}")
 
-            if (epoch + 1) % 5 == 0:
+            if (epoch + 1) % n_eval == 0:
                 accuracy, f1_score = self.evaluator.run_evaluation(model=self.model, dataloader=self.test_loader)
                 tqdm.write(f"Epoch [{epoch + 1}], Accuracy: {accuracy:.4f}, F1 Score: {f1_score:.4f}")
 
