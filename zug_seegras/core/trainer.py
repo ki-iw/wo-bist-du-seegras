@@ -24,6 +24,10 @@ class Trainer:
         checkpoint_path: Optional[str] = None,  # noqa: UP007
     ):
         self.config = get_model_config(model_name)
+
+        if not self.config["model"]["trainable"]:
+            raise ValueError("The model is not trainable!")  # noqa: TRY003
+
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model_factory = ModelFactory(device=self.device)
 
@@ -38,9 +42,6 @@ class Trainer:
 
     def initialize_model(self, checkpoint_path: str):
         model_params = self.config["model"]
-
-        if not model_params["trainable"]:
-            raise ValueError("The model is not trainable!")  # noqa: TRY003
 
         del model_params["trainable"]
 
