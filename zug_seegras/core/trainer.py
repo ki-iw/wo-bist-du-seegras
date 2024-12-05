@@ -4,10 +4,10 @@ from typing import Optional
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import yaml
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from zug_seegras.core.config_loader import get_model_config
 from zug_seegras.core.evaluator import Evaluator
 from zug_seegras.core.model_factory import ModelFactory
 from zug_seegras.logger import getLogger
@@ -18,12 +18,12 @@ log = getLogger(__name__)
 class Trainer:
     def __init__(
         self,
-        config_path: str,
+        model_name: str,
         train_loader: DataLoader,
         test_loader: DataLoader,
         checkpoint_path: Optional[str] = None,  # noqa: UP007
     ):
-        self.config = self.load_config(config_path)
+        self.config = get_model_config(model_name)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model_factory = ModelFactory(device=self.device)
 
@@ -35,11 +35,6 @@ class Trainer:
         self.optimizer = self.initialize_optimizer()
 
         self.evaluator = Evaluator(device=self.device)
-
-    @staticmethod
-    def load_config(config_path: str):
-        with open(config_path, "r") as file:  # noqa: UP015
-            return yaml.safe_load(file)
 
     def initialize_model(self, checkpoint_path: str):
         model_config = self.config["model"]
