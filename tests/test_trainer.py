@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -25,15 +26,17 @@ def dummy_test_loader():
     return create_data_loader(batch_size=32, num_samples=20, image_size=(3, 512, 512))
 
 
-def model_configs():
-    config_dir = Path("zug_seegras/config")
-    return [f for f in config_dir.iterdir() if f.suffix == ".yml" and f.name != "base.yml"]
+@pytest.mark.parametrize("config_path", os.listdir("zug_seegras/config"))
+def test_trainer_train_happy_case_integration(config_path, dummy_train_loader, dummy_test_loader):
+    config_path = Path(config_path)
+    model_name = config_path.stem
 
+    if model_name in ["base"]:
+        pytest.skip(f"Skip config file: {config_path.name}")
 
-@pytest.mark.parametrize("model_config", model_configs())
-def test_trainer_train_happy_case_integration(model_config, dummy_train_loader, dummy_test_loader):
-    model_name = model_config.stem
-    config = yaml.safe_load(model_config.read_text())
+    config_file_path = Path("zug_seegras/config") / config_path
+    with open(config_file_path, "r") as config_file:  # noqa: UP015
+        config = yaml.safe_load(config_file)
 
     if not config["model"]["trainable"]:
         with pytest.raises(ValueError, match="The model is not trainable"):
