@@ -40,12 +40,17 @@ def draw_bounding_box(
 
 
 def preprocess_image(image: np.ndarray, device: str = "cuda") -> torch.Tensor:
+    if isinstance(image, torch.Tensor):
+        image = image.mul(255).byte()
+        image = image.permute(1, 2, 0).cpu().numpy()
+
+    image_pil = Image.fromarray(image).convert("RGB")
+
     transform = T.Compose(
         [
             T.Resize(800),
             T.ToTensor(),
-            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ]
     )
-    image_pil = Image.fromarray(image).convert("RGB")
+
     return transform(image_pil).to(device)
