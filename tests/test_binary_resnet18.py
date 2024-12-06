@@ -11,13 +11,13 @@ def resnet18_fixture():
 
 
 def test_resnet18_initialization(resnet18_fixture):
-    model = resnet18_fixture.get_model()
+    model = resnet18_fixture
     assert isinstance(model, nn.Module)
 
 
 def test_get_resnet18_forward_pass(resnet18_fixture):
     input_tensor = torch.randn(1, 3, 512, 512)
     want = (1, 2)
-    model = resnet18_fixture.get_model()
+    model = resnet18_fixture
     got = model(input_tensor).shape
     assert got == want

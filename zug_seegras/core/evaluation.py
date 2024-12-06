@@ -5,10 +5,14 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 from torcheval.metrics.functional import multiclass_f1_score
 
-from zug_seegras.core.bag_of_seagrass import BagOfSeagrass, SeabagEnsemble
+from zug_seegras.core.bag_of_seagrass import SeabagEnsemble, SeaCLIPModel, SeaFeatsModel
 from zug_seegras.core.classification_models import BinaryResNet18
 
-# from zug_seegras.core.dataset import SeegrasDataset
+MODEL_REGISTRY = {
+    "seafeats": SeaFeatsModel,
+    "seaclips": SeaCLIPModel,
+    "resnet18": BinaryResNet18,
+}
 
 
 class Evaluator:
@@ -35,18 +39,14 @@ class Evaluator:
 
     def _initialize_model(self, model_name: str, weights_path: Optional[str] = None, n_classes: int = 2) -> nn.Module:  # noqa: UP007
         model_name = model_name.lower()
-        bag_of_seagrass = BagOfSeagrass(n_classes=n_classes)
 
-        if model_name == "seafeats":
-            return bag_of_seagrass.get_seafeats()
-        elif model_name == "seaclips":
-            return bag_of_seagrass.get_seaclips()
+        if model_name in MODEL_REGISTRY:
+            model_class = MODEL_REGISTRY[model_name]
+            model = model_class(n_classes=n_classes)
         elif model_name == "seabag_ensemble":
-            seafeats_model = bag_of_seagrass.get_seafeats()
-            seaclips_model = bag_of_seagrass.get_seaclips()
-            return SeabagEnsemble(seafeats_model, seaclips_model, self.device)
-        elif model_name == "resnet18":
-            model = BinaryResNet18().get_model()
+            sea_feats = SeaFeatsModel(n_classes=n_classes)
+            sea_clip = SeaCLIPModel(n_classes=n_classes)
+            return SeabagEnsemble(sea_feats, sea_clip, self.device)
         else:
             raise ValueError(f"Model '{model_name}' not supported.")  # noqa: TRY003
 
