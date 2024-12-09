@@ -10,10 +10,12 @@ import torch
 import yaml
 from groundingdino.config import GroundingDINO_SwinT_OGC
 from groundingdino.util.inference import load_model, predict
+from PIL import Image
+from torchvision import transforms as T
 from tqdm import tqdm
 
 from zug_seegras import getLogger
-from zug_seegras.utils import convert_msec, draw_bounding_box, preprocess_image
+from zug_seegras.utils import convert_msec
 
 warnings.filterwarnings("ignore")  # Suppress warnings
 log = getLogger(__name__)
@@ -111,6 +113,32 @@ class Sampler:
         with open(output_path, "w") as f:
             json.dump(self.annotations, f)
 
+    def draw_bounding_box(
+        self, frame: np.ndarray, scores: list[float], boxes: list[list[float]], labels: list[str]
+    ) -> np.ndarray:
+        frame_bb = np.copy(frame)
+        height, width = frame_bb.shape[:2]
+        valid_boxes = []
+
+        for n, box in enumerate(boxes):
+            x_center, y_center, width_norm, height_norm = box
+            w1 = int((x_center - width_norm / 2) * width)
+            h1 = int((y_center - height_norm / 2) * height)
+            w2 = int((x_center + width_norm / 2) * width)
+            h2 = int((y_center + height_norm / 2) * height)
+
+            # Check if the bounding box is too large (we don't want frame-sized boxes)
+            if (w2 - w1) / width < 0.95 and (h2 - h1) / height < 0.95:
+                valid_boxes.append((w1, h1, w2, h2, labels[n], scores[n]))
+
+        for w1, h1, w2, h2, label, score in valid_boxes:
+            cv2.rectangle(frame_bb, (w1, h1), (w2, h2), (0, 255, 0), 2)
+            cv2.putText(
+                frame_bb, f"{label}: {score:.2f}", (w1 + 8, h1 + 22), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
+            )
+
+        return frame_bb if valid_boxes else None
+
     def save_run_info(self, output_folder: Path, detections: int, processed_frames: int) -> None:
         info = {
             "run_info": {
@@ -131,7 +159,7 @@ class Sampler:
             yaml.dump(info, outfile, default_flow_style=False)
 
     def get_prediction(self, frame: np.ndarray) -> tuple[list[float], list[float], list[str]]:
-        processed_frame = preprocess_image(frame, self.device)
+        processed_frame = self.preprocess_image(frame)
 
         if self.model_name == "gDINO":
             boxes, scores, labels = predict(
@@ -141,6 +169,17 @@ class Sampler:
         else:
             raise ValueError(f"Model {self.model_name} not implemented!")  # noqa: TRY003
         return boxes, scores, labels
+
+    def preprocess_image(self, image: np.ndarray) -> torch.Tensor:
+        transform = T.Compose(
+            [
+                T.Resize(800),
+                T.ToTensor(),
+                T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+            ]
+        )
+        image_pil = Image.fromarray(image).convert("RGB")
+        return transform(image_pil).to(self.device)
 
     def process_images(self, image_paths: list[str]):
         log.info(f"Start Image Processing. Saving results to {self.run_folder}")
@@ -153,7 +192,7 @@ class Sampler:
                 image = cv2.imread(str(image_path))
 
                 boxes, scores, labels = self.get_prediction(image)
-                result = draw_bounding_box(image, scores, boxes, labels)
+                result = self.draw_bounding_box(image, scores, boxes, labels)
 
                 if result is not None:
                     output_image_path = (
@@ -199,7 +238,7 @@ class Sampler:
                         hours, minutes, seconds, milliseconds = convert_msec(video.get(cv2.CAP_PROP_POS_MSEC))
                         boxes, scores, labels = self.get_prediction(frame)
 
-                        result = draw_bounding_box(frame, scores, boxes, labels)
+                        result = self.draw_bounding_box(frame, scores, boxes, labels)
                         if result is not None:
                             output_frame_path = f"{self.run_folder}/frames/frame_{hours}h:{minutes}min:{seconds}sec:{milliseconds}msec.jpg"
                             output_bb_path = f"{self.run_folder}/annotated_frames/frame_bb_{hours}h:{minutes}min:{seconds}sec:{milliseconds}msec.jpg"

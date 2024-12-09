@@ -3,14 +3,3 @@ model:
   finetune: true
   n_classes: 2
   trainable: true
-
-
-training:
-  batch_size: 32
-  learning_rate: 0.001
-  num_epochs: 20
-  optimizer: Adam
-  scheduler: step_lr
-  loss_function: BinaryCrossEntropy
-  step_size: 5
-  shuffle: true
