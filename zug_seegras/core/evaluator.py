@@ -19,23 +19,21 @@ class Evaluator:
         checkpoint_path: Optional[str] = None,  # noqa: UP007
         n_classes: int = 2,
         transforms=None,
+        device: Optional[torch.device] = None,  # noqa: UP007
     ) -> None:
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.transforms = transforms
 
-        model_factory = ModelFactory(self.device)
+        model_factory = None
 
         if model is not None:
             self.model = model
         elif model_name is not None:
+            model_factory = ModelFactory(self.device)
             self.model = model_factory.create_model(model_name=model_name, n_classes=n_classes)
-        else:
-            raise ValueError("Either a model or a model_name must be provided.")  # noqa: TRY003
 
-        if checkpoint_path is not None:
+        if model_factory and checkpoint_path:
             model_factory.load_checkpoint(self.model, checkpoint_path)
-
-        self.model.eval()
 
     def _prepare_dataloader(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> DataLoader:
         dataset.transform = self.transforms
@@ -61,19 +59,32 @@ class Evaluator:
         n_classes = int(torch.unique(predictions).size(0))
         return multiclass_f1_score(labels, predictions, num_classes=n_classes).item()
 
-    def run_evaluation(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> dict:
-        dataloader = self._prepare_dataloader(dataset, batch_size, shuffle)
+    def run_evaluation(
+        self,
+        model: Optional[nn.Module] = None,  # noqa: UP007
+        dataloader: Optional[DataLoader] = None,  # noqa: UP007
+        dataset: Optional[Dataset] = None,  # noqa: UP007
+        batch_size: int = 1,
+        shuffle: bool = False,
+    ) -> dict:
+        if not dataloader:
+            if not dataset:
+                raise ValueError("Either 'dataloader' or 'dataset' must be provided!")  # noqa: TRY003
+            dataloader = self._prepare_dataloader(dataset, batch_size, shuffle)
+
+        if model is None:
+            model = self.model
 
         all_labels = []
         all_predictions = []
 
-        self.model.eval()
+        model.eval()
         with torch.no_grad():
             for batch in dataloader:
                 inputs, labels = batch
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
 
-                outputs = self.model(inputs)
+                outputs = model(inputs)
 
                 _, predicted = torch.max(outputs, 1)
 
@@ -107,5 +118,5 @@ if __name__ == "__main__":
     )
 
     evaluator = Evaluator(model_name="seaclips", transforms=transforms)
-    results = evaluator.run_evaluation(dataset, batch_size=1, shuffle=False)
-    print(f"Results: {results}")
+    accuracy, f1_score = evaluator.run_evaluation(dataset=dataset, batch_size=1, shuffle=False)
+    print(f"Acc: {accuracy}, F1: {f1_score}")
