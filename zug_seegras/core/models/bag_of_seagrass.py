@@ -31,8 +31,15 @@ class BaseSeagrassModel(nn.Module):
 
 
 class SeaFeatsModel(BaseSeagrassModel):
-    def __init__(self, n_classes: int = 4, stride: int = 16, weights_path: Optional[str] = None):  # noqa: UP007
+    def __init__(
+        self,
+        n_classes: int = 4,
+        stride: int = 16,
+        weights_path: Optional[str] = None,  # noqa: UP007
+        finetune: bool = False,
+    ):
         super().__init__(n_classes, stride)
+        self.finetune = finetune
         self.model = self._build_model(weights_path)
 
     def _build_model(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
@@ -67,18 +74,32 @@ class SeaFeatsModel(BaseSeagrassModel):
             all_layers.append(layer)
 
         model = nn.Sequential(*all_layers)
+
+        if self.finetune and self.n_classes == 2:
+            model[-1] = nn.Linear(512, 1)
         return model
 
     def forward(self, x):
         x = self.model(x)
-        if self.n_classes == 2:
-            x = self._binary_classifier(x)
-        return self.softmax(x)
+        if self.finetune and self.n_classes == 2:
+            x = torch.sigmoid(x)
+        elif not self.finetune:
+            if self.n_classes == 2:
+                x = self._binary_classifier(x)
+            x = self.softmax(x)
+        return x
 
 
 class SeaCLIPModel(BaseSeagrassModel):
-    def __init__(self, n_classes: int = 4, stride: int = 16, weights_path: Optional[str] = None):  # noqa: UP007
+    def __init__(
+        self,
+        n_classes: int = 4,
+        stride: int = 16,
+        weights_path: Optional[str] = None,  # noqa: UP007
+        finetune: bool = False,
+    ):
         super().__init__(n_classes, stride)
+        self.finetune = finetune
         self.model = self._build_model(weights_path)
 
     def _build_model(self, weights_path: Optional[str]):  # noqa: UP007
@@ -101,13 +122,21 @@ class SeaCLIPModel(BaseSeagrassModel):
         clip_model_pool.append(all_layers[-1])
 
         model = nn.Sequential(*clip_model_pool)
+
+        if self.finetune and self.n_classes == 2:
+            model[-1] = nn.Linear(512, 1)
+
         return model
 
     def forward(self, x):
         x = self.model(x)
-        if self.n_classes == 2:
-            x = self._binary_classifier(x)
-        return self.softmax(x)
+        if self.finetune and self.n_classes == 2:
+            x = torch.sigmoid(x)
+        elif not self.finetune:
+            if self.n_classes == 2:
+                x = self._binary_classifier(x)
+            x = self.softmax(x)
+        return x
 
 
 class SeabagEnsemble(nn.Module):

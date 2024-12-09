@@ -24,8 +24,22 @@ def seafeats_model():
 
 
 @pytest.fixture
+def seafeats_model_finetune():
+    model = SeaFeatsModel(n_classes=2, stride=16, weights_path=SEAFEATS_WEIGHTS, finetune=True)
+    model.eval()
+    return model
+
+
+@pytest.fixture
 def seaclips_model():
     model = SeaCLIPModel(n_classes=4, stride=16, weights_path=SEACLIP_WEIGHTS)
+    model.eval()
+    return model
+
+
+@pytest.fixture
+def seaclips_model_finetune():
+    model = SeaCLIPModel(n_classes=2, stride=16, weights_path=SEACLIP_WEIGHTS, finetune=True)
     model.eval()
     return model
 
@@ -60,29 +74,27 @@ def seabag_binary_ensemble(seafeats_binary_model, seaclips_binary_model):
     return ensemble
 
 
-def test_get_seafeats_initialization(seafeats_model):
-    assert isinstance(seafeats_model, nn.Module)
+@pytest.mark.parametrize(
+    "mode_fixture", ["seafeats_model", "seafeats_model_finetune", "seaclips_model", "seaclips_model_finetune"]
+)
+def test_get_model_initialization(request, mode_fixture):
+    assert isinstance(request.getfixturevalue(mode_fixture), nn.Module)
 
 
 @torch.no_grad()
 @pytest.mark.parametrize("batch_size", [1, 4])
-def test_get_seafeats_forward_pass(seafeats_model, batch_size):
+@pytest.mark.parametrize(
+    "mode_fixture, want_size",
+    [("seafeats_model", 4), ("seafeats_model_finetune", 1), ("seaclips_model", 4), ("seaclips_model_finetune", 1)],
+)
+def test_get_model_forward_pass(request, mode_fixture, batch_size, want_size):
+    model = request.getfixturevalue(mode_fixture)
+
     input_tensor = torch.randn(batch_size, 3, 512, 512)
-    want = (batch_size, 4)
-    got = seafeats_model(input_tensor).shape
-    assert got == want
 
+    got = model(input_tensor).shape
+    want = (batch_size, want_size)
 
-def test_get_seaclips_initialization(seaclips_model):
-    assert isinstance(seaclips_model, nn.Module)
-
-
-@torch.no_grad()
-@pytest.mark.parametrize("batch_size", [1, 4])
-def test_get_seaclips_forward_pass(seaclips_model, batch_size):
-    input_tensor = torch.randn(batch_size, 3, 512, 512)
-    want = (batch_size, 4)
-    got = seaclips_model(input_tensor).shape
     assert got == want
 
 
