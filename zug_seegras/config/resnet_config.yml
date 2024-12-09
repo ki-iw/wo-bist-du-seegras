@@ -1,0 +1,17 @@
+model:
+  name: resnet18
+  pretrained: true
+  num_classes: 2
+
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  epochs: 20
+  optimizer: adam
+  scheduler: step_lr
+  step_size: 5
+  gamma: 0.5
+
+evaluation:
+  batch_size: 16
+  shuffle: false
