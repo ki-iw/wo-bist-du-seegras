@@ -1,6 +1,6 @@
 .PHONY: help install format check test build clean-build docs docs-test
 
-install: ## Install the project dependencies, pre-commit hooks and Jupyter notebook filters.
+install:
 	@echo "🏗️ Installing project dependencies"
 	@poetry install
 	@echo "🪐 Installing Jupyter cleaner"
@@ -9,32 +9,29 @@ install: ## Install the project dependencies, pre-commit hooks and Jupyter noteb
 	@poetry run pre-commit install
 	@echo "🎉 Done"
 
-format: ## Format all project files and sort imports.
+format:
 	@echo "🪄 Formatting files"
 	@poetry run black .
 	@poetry run ruff --select I --fix .
 
-
-check: ## Run code quality checks. Recommended before committing.
+check:
 	@echo "🔎 Checking Poetry lock file consistency with pyproject.toml"
 	@poetry check
 	@echo "🔍 Running pre-commit"
 	@poetry run pre-commit run -a
 
-
-test: ## Test the code with pytest
+test:
 	@echo "🚦 Testing code"
-	@poetry run pytest --doctest-modules
+	@poetry run pytest -vv -p no:warnings --cov=zug_seegras/core  tests
 
-dev: format check test
-
-build: clean-build ## Build wheel file using poetry
+build: clean-build
 	@echo "🚀 Creating wheel file"
 	@poetry build
 
-clean-build: ## clean build artifacts
-	@rm -rf dist
+dev: format check test
 
+clean-build:
+	@rm -rf dist
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

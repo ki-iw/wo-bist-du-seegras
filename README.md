@@ -1,15 +1,8 @@
 # ZUG-seegras
 
-This is a template repository for a Birds on Mars project.
+A project to train, evaluate and run vision models to detect seagrass from images and video files.
 
-## Getting started with your project
-
-This project was created from the [Birds on Mars Developer Template](https://github.com/birds-on-mars/dev-template) and comes with batteries included:
-- Poetry for dependency managment
-- Formatting, linting
-- GitHub Actions run tests and test compatibility under different versions of Python
-- Makefile commands to automatically format and lint your code
-
+## Setup
 
 To get started, let's create a Conda environment, and install dependencies into this environment.
 
@@ -34,86 +27,64 @@ To get started, let's create a Conda environment, and install dependencies into 
     $ python -m zug_seegras
     ```
 
+## Repository Structure
 
-### Format on save
-Formatting Python code when saving a file is *highly* recommended to make sure the files are properly formatted before any commit. To enable this, install the "Black Formatter" extension in VS Code either within the UI or by executing:
-```bash
-code --install-extension ms-python.black-formatter
-```
+The repository is organized into the following key directories and scripts under the `zug_seegras/` folder:
 
-In case the `code` executable cannot be found, install it via the UI by bringing up the Command Palette with `Shift+Cmd+P` and search for `Shell command: Install "code" command in PATH` and re-run the previous command. You can always run `make format` to format the entire project (altough you should then never need to do this).
+### `zug_seegras/`
+This is the main directory containing the productive code and key scripts for the project.
 
-To activate black in PyCharm, [follow the description here](https://black.readthedocs.io/en/stable/integrations/editors.html#pycharm-intellij-idea).
+- **`core/`**: Contains the core logic and essential code for the project.
+    - **`models/`**: Contains scripts for each model class. Currently, three models are implemented:
+        - **`BinaryResnet18`**: A basic implementation of a PyTorch ResNet18 model with a binary output layer, trained using BinaryCrossEntropy loss.
+        - **`BagOfSeagrass`**: Includes three separate models: SeaCLIP, SeaFeats, and an ensemble of both. These models can output a four-class result (background and three types of seagrass) or a binary classification.
+        - **`GroundingDINO`**: Implementation of GroundingDINO, adjusted to the expected output format of the project. The bounding box output is post-processed to predict binary classification. This model is not finetunable.
+    - **`datasets/`**: Contains scripts for building a PyTorch `Dataset` object from images and labels (processed using `datumaru_processor.py` and `video_processor.py`).
+    - **`config_loader.py`**: Loads and processes the YAML configuration files.
+    - **`data_loader.py`**: Constructs a PyTorch `DataLoader` object given a `Dataset` object (with training and test splits).
+    - **`evaluator.py`**: Evaluates a model on a test `DataLoader` and computes metrics such as accuracy and F1 score. It can be used during training every `n` epochs or as a standalone script.
+    - **`model_factory.py`**: Creates instances of the implemented models, and supports saving/loading model checkpoints (for resuming training).
+    - **`trainer.py`**: Manages the training of models based on the YAML configuration file, supports model checkpointing, and provides evaluation at specified intervals.
+    - **`video_processor.py`**: Processes video files by extracting relevant frames (based on labels) and applying basic transformations.
+
+- **`scripts/`**: Contains scripts for interacting with the core functionality of the repository.
+    - **`dataloader_script.py`**: Preprocesses a video and its associated label JSON file, extracting frames and creating the appropriate folder structure for data.
+    - **`evaluation_script.py`**: Evaluates a trained model on a dataset (created by `dataloader_script.py`), and generates evaluation metrics.
+    - **`training_script.py`**: Trains a model on a given dataset folder and evaluates it periodically.
+
+- **`config/`**: Contains configuration files in YAML format for training, evaluation, and dataset selection.
+    - **`base.yml`**: Base configuration shared by all models, containing parameters for evaluation and dataset settings.
+    - **`[model_name].yml`**: Model-specific YAML files that handle the training parameters for each model.
+
+### Data Processing Workflow
+The data processing pipeline is as follows:
+1. **Video and Label Files**: Given a video file and a label JSON file (currently in Datumaru format), we construct a dataset by processing the labels (`datumaru_processor.py`) and extracting relevant frames from the video (`video_processor.py`).
+2. **Dataset Organization**: Each video is treated as a separate dataset (though in the future, there may be an option to combine frames from multiple videos into a single dataset).
+3. **Dataset and DataLoader Creation**: The `datasets/seegras.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
 
 
-You are now ready to start development on your project with your first commit! The CI/CD pipeline will be triggered when you open a pull request, merge to main, or when you create a new release.
+## Running
 
-There see all available commands for convenience, type
-```bash
-make
-```
+The project includes scripts to perform key tasks, which are located in the `scripts` subfolder:
+
+- **Training**: Use `training_script.py` to handle data loading, model training, and checkpointing.
+- **Evaluation**: Use `evaluation_script.py` to evaluate trained models and generate metrics such as accuracy and F1 score.
+- **Data Loading**: Use `dataloader_script.py` to preprocess and load data.
+
+These scripts ensure the project is modular, reproducible, and easy to extend.
 
 
-
-## Developement
+## Development
 Some tasks need to be done repeatedly.
 
 ### Adding dependencies
+Use `poetry` to add new dependencies to the project:
 ```bash
 $ poetry add [package-name]
 ```
-In case this requirement is only needed for development, add `-G dev` to mark it as needed for developement only by adding it to the "dev" group. When installing the project later some place, you can ommit them:
-```bash
-$ poetry install --without dev
-```
-You can create your own custom groups to bundle optional packages.
-### Updating dependencies
-Update all or specified packages within the [version constraints](https://python-poetry.org/docs/dependency-specification/) defined in `pyproject.toml`
-```bash
-$ poetry update [package-name(s)]
-```
 
-### Commiting to Git
-Before doing so, run tests and optionally format your code (you should have "Format on save" activated by now anyway, so this should not be required):
+### Running tests
+Run all unit and integration tests, and print a coverage report:
 ```bash
 $ make test
-$ make format
 ```
-
-When commiting to a branch, the pre-commit hooks will not be executed. It's still good practice to regularly check your code to make sure the code passes the pre-commit hooks.
-
-```bash
-$ make check
-```
-
-To run formatting, linting and tests run altogether run:
-```bash
-$ make dev
-```
-
-Then commit to git the way you always do!
-
-
-## Run your code
-Activate the shell with
-```bash
-$ poetry shell
-```
-
-### Run package
-The entrypoint for your module is `zug_seegras/__main__.py` which is excecuted by running
-```bash
-$ python -m zug_seegras
-```
-### Run CLI
-Additionally, a command line interface exists that can be called via
-```bash
-$ zug_seegras_cli
-```
-
-## Install
-To install the project without the development dependencies, run
-`$ poetry install --without=dev`
-
-## Feedback and issues
-Should you encounter any problems or suggestions with this template, please [open an issue here](https://github.com/birds-on-mars/dev-template/issues)
