@@ -5,9 +5,7 @@ from zug_seegras.core.datasets.seegras import SeegrasDataset
 from zug_seegras.core.trainer import Trainer
 
 
-def main():
-    data_path = "data/Seegras_v1"
-
+def main(model_name: str, data_path: str = "data/Seegras_v1"):
     transforms = Compose(
         [Resize((512, 512)), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
     )
@@ -21,12 +19,11 @@ def main():
         shuffle=True,
     )
 
-    config_path = "zug_seegras/config/config.yml"
-
-    trainer = Trainer(config_path=config_path, train_loader=train_loader, test_loader=test_loader, checkpoint_path=None)
+    trainer = Trainer(model_name=model_name, train_loader=train_loader, test_loader=test_loader, checkpoint_path=None)
 
     trainer.train()
 
 
 if __name__ == "__main__":
-    main()
+    model_name = "resnet18"
+    main(model_name)
