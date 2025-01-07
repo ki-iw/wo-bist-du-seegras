@@ -2,7 +2,7 @@
 name = "zug_seegras"
 version = "0.0.1"
 description = "This is a template repository for a Birds on Mars project."
-authors = ["Birds on Mars <info@birdsonmars.com>"]
+authors = [{name = "Birds on Mars", email = "info@birdsonmars.com"}]
 readme = "README.md"
 packages = [
   {include = "zug_seegras"}
