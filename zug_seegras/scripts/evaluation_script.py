@@ -9,9 +9,7 @@ from zug_seegras.logger import getLogger
 log = getLogger(__name__)
 
 
-def main(model_name: str):
-    data_path = "data/Seegras_v1"
-
+def main(model_name: str, data_path: str = "data/Seegras_v1"):
     transforms = Compose(
         [Resize((512, 512)), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
     )

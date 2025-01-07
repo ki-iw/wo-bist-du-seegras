@@ -9,8 +9,8 @@ from zug_seegras.logger import getLogger
 log = getLogger(__name__)
 
 
-def main():
-    data_path = Path("data")
+def main(input_path: str = "data/Seegras_v1"):
+    data_path = Path(input_path)
     video_file = data_path / "input_video" / "trimmed_testvideo.mov"
     label_json_path = data_path / "input_label" / "default.json"
     output_frames_dir = data_path / "output"
