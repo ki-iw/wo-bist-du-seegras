@@ -44,7 +44,7 @@ class SeaFeatsModel(BaseSeagrassModel):
 
     def _build_model(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
         if weights_path is None:
-            weights_path = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models/SeaFeats.pt"
+            weights_path = "/mnt/data/ZUG-Seegras/weights/bag-of-seagrassSeaFeats.pt"
 
         seafeats = models.resnet18()
         layers = list(seafeats.children())[:-2]
@@ -104,7 +104,7 @@ class SeaCLIPModel(BaseSeagrassModel):
 
     def _build_model(self, weights_path: Optional[str]):  # noqa: UP007
         if weights_path is None:
-            weights_path = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models/SeaCLIP.pt"
+            weights_path = "/mnt/data/ZUG-Seegras/weights/bag-of-seagrass/SeaCLIP.pt"
 
         clip_model_load = models.resnet18()
         clip_model_load.fc = nn.Sequential(nn.Linear(512, 512), nn.ReLU(), nn.Dropout(0.15), nn.Linear(512, 4))
