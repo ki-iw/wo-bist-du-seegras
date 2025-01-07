@@ -17,7 +17,7 @@ format: ## Format all project files and sort imports.
 
 check: ## Run code quality checks. Recommended before committing.
 	@echo "🔎 Checking Poetry lock file consistency with pyproject.toml"
-	@poetry --check
+	@poetry check
 	@echo "🔍 Running pre-commit"
 	@poetry run pre-commit run -a
 
