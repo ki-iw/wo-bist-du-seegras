@@ -43,17 +43,6 @@ testpaths = [
     "tests"
 ]
 
-[[tool.poetry.source]]
-name = "torch118"
-url = "https://download.pytorch.org/whl/cu118"
-priority = "explicit"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-testpaths = [
-    "tests"
-]
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
