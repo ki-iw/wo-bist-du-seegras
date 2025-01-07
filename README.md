@@ -27,6 +27,42 @@ To get started, let's create a Conda environment, and install dependencies into 
     $ python -m zug_seegras
     ```
 
+## Repository Structure
+
+The repository is organized into the following key directories and scripts under the `zug_seegras/` folder:
+
+### `zug_seegras/`
+This is the main directory containing the productive code and key scripts for the project.
+
+- **`core/`**: Contains the core logic and essential code for the project.
+    - **`models/`**: Contains scripts for each model class. Currently, three models are implemented:
+        - **`BinaryResnet18`**: A basic implementation of a PyTorch ResNet18 model with a binary output layer, trained using BinaryCrossEntropy loss.
+        - **`BagOfSeagrass`**: Includes three separate models: SeaCLIP, SeaFeats, and an ensemble of both. These models can output a four-class result (background and three types of seagrass) or a binary classification.
+        - **`GroundingDINO`**: Implementation of GroundingDINO, adjusted to the expected output format of the project. The bounding box output is post-processed to predict binary classification. This model is not finetunable.
+    - **`datasets/`**: Contains scripts for building a PyTorch `Dataset` object from images and labels (processed using `datumaru_processor.py` and `video_processor.py`).
+    - **`config_loader.py`**: Loads and processes the YAML configuration files.
+    - **`data_loader.py`**: Constructs a PyTorch `DataLoader` object given a `Dataset` object (with training and test splits).
+    - **`evaluator.py`**: Evaluates a model on a test `DataLoader` and computes metrics such as accuracy and F1 score. It can be used during training every `n` epochs or as a standalone script.
+    - **`model_factory.py`**: Creates instances of the implemented models, and supports saving/loading model checkpoints (for resuming training).
+    - **`trainer.py`**: Manages the training of models based on the YAML configuration file, supports model checkpointing, and provides evaluation at specified intervals.
+    - **`video_processor.py`**: Processes video files by extracting relevant frames (based on labels) and applying basic transformations.
+
+- **`scripts/`**: Contains scripts for interacting with the core functionality of the repository.
+    - **`dataloader_script.py`**: Preprocesses a video and its associated label JSON file, extracting frames and creating the appropriate folder structure for data.
+    - **`evaluation_script.py`**: Evaluates a trained model on a dataset (created by `dataloader_script.py`), and generates evaluation metrics.
+    - **`training_script.py`**: Trains a model on a given dataset folder and evaluates it periodically.
+
+- **`config/`**: Contains configuration files in YAML format for training, evaluation, and dataset selection.
+    - **`base.yml`**: Base configuration shared by all models, containing parameters for evaluation and dataset settings.
+    - **`[model_name].yml`**: Model-specific YAML files that handle the training parameters for each model.
+
+### Data Processing Workflow
+The data processing pipeline is as follows:
+1. **Video and Label Files**: Given a video file and a label JSON file (currently in Datumaru format), we construct a dataset by processing the labels (`datumaru_processor.py`) and extracting relevant frames from the video (`video_processor.py`).
+2. **Dataset Organization**: Each video is treated as a separate dataset (though in the future, there may be an option to combine frames from multiple videos into a single dataset).
+3. **Dataset and DataLoader Creation**: The `datasets/seegras.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
+
+
 ## Running
 
 The project includes scripts to perform key tasks, which are located in the `scripts` subfolder:
@@ -38,7 +74,7 @@ The project includes scripts to perform key tasks, which are located in the `scr
 These scripts ensure the project is modular, reproducible, and easy to extend.
 
 
-## Developement
+## Development
 Some tasks need to be done repeatedly.
 
 ### Adding dependencies
