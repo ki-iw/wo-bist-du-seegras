@@ -14,12 +14,12 @@ format: ## Format all project files and sort imports.
 	@poetry run black .
 	@poetry run ruff --select I --fix .
 
+
 check: ## Run code quality checks. Recommended before committing.
 	@echo "🔎 Checking Poetry lock file consistency with pyproject.toml"
-	@poetry lock --check
+	@poetry --check
 	@echo "🔍 Running pre-commit"
 	@poetry run pre-commit run -a
-
 
 
 test: ## Test the code with pytest
