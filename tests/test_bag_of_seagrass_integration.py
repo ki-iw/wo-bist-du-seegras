@@ -11,7 +11,7 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed(123)
 
 # TODO: move weights to shared folder on KI-IW remote or load them dynamically
-MODEL_DIR = "/home/jupyter-nikolailorenz/bag-of-seagrass/Models"
+MODEL_DIR = "/mnt/data/ZUG-Seegras/weights/bag-of-seagrass"
 SEAFEATS_WEIGHTS = os.path.join(MODEL_DIR, "SeaFeats.pt")
 SEACLIP_WEIGHTS = os.path.join(MODEL_DIR, "SeaCLIP.pt")
 
