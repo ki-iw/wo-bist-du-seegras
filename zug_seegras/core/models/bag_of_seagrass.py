@@ -44,7 +44,7 @@ class SeaFeatsModel(BaseSeagrassModel):
 
     def _build_model(self, weights_path: Optional[str] = None) -> nn.Module:  # noqa: UP007
         if weights_path is None:
-            weights_path = "/mnt/data/ZUG-Seegras/weights/bag-of-seagrassSeaFeats.pt"
+            weights_path = "/mnt/data/ZUG-Seegras/weights/bag-of-seagrass/SeaFeats.pt"
 
         seafeats = models.resnet18()
         layers = list(seafeats.children())[:-2]
