@@ -16,7 +16,7 @@ format:
 
 check:
 	@echo "🔎 Checking Poetry lock file consistency with pyproject.toml"
-	@poetry lock --check
+	@poetry check
 	@echo "🔍 Running pre-commit"
 	@poetry run pre-commit run -a
 
