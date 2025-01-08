@@ -31,7 +31,7 @@ class GroundingDinoClassifier:
         self.model = self.load_model()
 
     def load_model(self):
-        weights_path = Path.home() / "tmp/weights/groundingdino_swint_ogc.pth"
+        weights_path = Path.home() / "/mnt/data/ZUG-Seegras/weights/groundingdino_swint_ogc.pth"
         return load_model(GroundingDINO_SwinT_OGC.__file__, weights_path, device=self.device)
 
     def preprocess_image(self, image: np.ndarray) -> torch.Tensor:
