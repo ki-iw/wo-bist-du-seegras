@@ -7,6 +7,8 @@ install:
 	@git config --local filter.jupyter.smudge cat
 	@echo "🪝 Installing pre-commit hooks"
 	@poetry run pre-commit install
+	@echo "Installing FiftyOne"
+	@pip install fiftyone
 	@echo "🎉 Done"
 
 format:

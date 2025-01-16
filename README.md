@@ -88,3 +88,9 @@ Run all unit and integration tests, and print a coverage report:
 ```bash
 $ make test
 ```
+
+## FiftyOne Integration
+
+When running the evaluator with the argument `save_fiftyone=True`, the data is saved to a FiftyOne dataset. To view the dataset in the FiftyOne web UI, execute the `fiftyone_logger.py` script.
+
+If you are working on the KI-IW remote machine, you may need to manually forward port `5154` to your local machine. Once the port is forwarded, you can access the FiftyOne web interface by navigating to [http://localhost:5154/](http://localhost:5154/) in your browser.

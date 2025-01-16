@@ -17,6 +17,7 @@ pytest = "^7.4.0"
 pre-commit = "^3.3.3"
 ipykernel = "^6.25.1"
 ruff = "*"
+# Note: FiftyOne is installed via pip due to dependency resolution issues with Poetry.
 
 [[tool.poetry.source]]
 name = "torch118"

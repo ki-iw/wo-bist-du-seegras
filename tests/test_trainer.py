@@ -2,18 +2,10 @@ import os
 from pathlib import Path
 
 import pytest
-import torch
 import yaml
-from torch.utils.data import DataLoader, TensorDataset
 
+from tests.utils import create_data_loader
 from zug_seegras.core.trainer import Trainer
-
-
-def create_data_loader(batch_size: int, num_samples: int, image_size: tuple):
-    x_data = torch.randn(num_samples, *image_size)
-    y_data = torch.randint(0, 2, (num_samples,))
-    dataset = TensorDataset(x_data, y_data)
-    return DataLoader(dataset, batch_size=batch_size)
 
 
 @pytest.fixture

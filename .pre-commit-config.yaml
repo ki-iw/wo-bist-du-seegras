@@ -10,15 +10,6 @@ repos:
       - id: yamllint
         args: ["--config-data", "{extends: default, rules: {line-length: {max: 100, level: warning}, document-start: {present: false}}}"]
 
-  - repo: local
-    hooks:
-      - id: python-unit-tests
-        name: seegras unit tests
-        entry: pytest -v -k "not _integration" -p no:warnings --cov=zug_seegras/core  tests
-        pass_filenames: false
-        types: [python]
-        language: system
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.1.6  # Use the latest version
     hooks:

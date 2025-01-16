@@ -5,6 +5,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torcheval.metrics.functional import multiclass_f1_score
 
+from zug_seegras.core.fiftyone_logger import FiftyOneLogger
 from zug_seegras.core.model_factory import ModelFactory
 
 
@@ -16,8 +17,10 @@ class Evaluator:
         checkpoint_path: Optional[str] = None,  # noqa: UP007
         n_classes: int = 2,
         device: Optional[torch.device] = None,  # noqa: UP007
+        save_fiftyone: bool = False,
     ) -> None:
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.save_fiftyone = save_fiftyone
 
         model_factory = None
 
@@ -29,6 +32,9 @@ class Evaluator:
 
         if model_factory and checkpoint_path:
             model_factory.load_checkpoint(self.model, checkpoint_path)
+
+        if self.save_fiftyone:
+            self.fiftyone_logger = FiftyOneLogger()
 
     @staticmethod
     def calculate_accuracy(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
@@ -67,7 +73,7 @@ class Evaluator:
         model.eval()
         with torch.no_grad():
             for batch in dataloader:
-                inputs, labels = batch
+                inputs, labels, paths = batch
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
 
                 outputs = model(inputs)
@@ -76,6 +82,9 @@ class Evaluator:
 
                 all_labels.append(labels)
                 all_predictions.append(predicted)
+
+                if self.save_fiftyone:
+                    self.fiftyone_logger.add_batch_samples(inputs, paths, labels, predicted)
 
         all_labels = torch.cat(all_labels)
         all_predictions = torch.cat(all_predictions)

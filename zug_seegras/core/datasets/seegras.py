@@ -53,4 +53,4 @@ class SeegrasDataset(Dataset):
         image = Image.fromarray(image)
 
         image = self.transform(image) if self.transform else pil_to_tensor(image).float() / 255.0
-        return image, label
+        return image, label, str(frame_path)

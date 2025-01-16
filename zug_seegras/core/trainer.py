@@ -83,7 +83,7 @@ class Trainer:
             self.model.train()
             running_loss = 0.0
 
-            for inputs, labels in tqdm(self.train_loader, desc=f"Epoch {epoch + 1}/{num_epochs}", leave=False):
+            for inputs, labels, _ in tqdm(self.train_loader, desc=f"Epoch {epoch + 1}/{num_epochs}", leave=False):
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
 
                 self.optimizer.zero_grad()
