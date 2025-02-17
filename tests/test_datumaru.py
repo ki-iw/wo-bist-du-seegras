@@ -10,19 +10,23 @@ from zug_seegras.core.datumaru_processor import DatumaroProcessor as D
 sample_datumaro_json = {
     "items": [
         {"id": "frame_000001", "attr": {"frame": 1}, "annotations": []},
-        {"id": "frame_000002", "attr": {"frame": 2}, "annotations": [{"type": "polygon", "id": 1}]},
-        {"id": "frame_000003", "attr": {"frame": 3}, "annotations": [{"type": "bbox", "id": 2}]},
+        {"id": "frame_000002", "attr": {"frame": 2}, "annotations": [{"type": "bbox", "label_id": 0}]},
+        {"id": "frame_000003", "attr": {"frame": 3}, "annotations": [{"type": "bbox", "label_id": 1}]},
         {
             "id": "frame_000004",
             "attr": {"frame": 4},
-            "annotations": [{"type": "polygon", "id": 3}, {"type": "bbox", "id": 4}],
+            "annotations": [{"type": "bbox", "label_id": 0}, {"type": "bbox", "label_id": 1}],
         },
         {
             "id": "frame_000005",
             "attr": {"frame": 5},
-            "annotations": [{"type": "polygon", "id": 5}, {"type": "polygon", "id": 6}],
+            "annotations": [{"type": "bbox", "label_id": 0}, {"type": "bbox", "label_id": 0}],
         },
-        {"id": "frame_000006", "attr": {"frame": 6}, "annotations": []},
+        {
+            "id": "frame_000006",
+            "attr": {"frame": 6},
+            "annotations": [{"type": "bbox", "label_id": 1}, {"type": "bbox", "label_id": 1}],
+        },
         {"id": "frame_000007", "attr": {"frame": 7}, "annotations": []},
         {"id": "frame_000008", "attr": {"frame": 8}, "annotations": []},
     ]
@@ -57,10 +61,12 @@ def test_load_json__unhappy_case_invalid_json(tmp_path: Path):
 @patch.object(D, "load_json", return_value=sample_datumaro_json)
 def test_convert_datumaru_happy_case(mock_load_json):
     processor = D("dummy_path.json")
-    frame_ids, labels = processor.convert_datumaru()
+    frame_ids, labels, invalid_frames = processor.convert_datumaru()
 
-    expected_frame_ids = [1, 3, 4]
-    expected_labels = torch.tensor([0, 1, 1], dtype=torch.int)
+    expected_frame_ids = [1, 2, 3, 7, 8]
+    expected_invalid_frames = [4, 5, 6]
+    expected_labels = torch.tensor([2, 0, 1, 2, 2], dtype=torch.int)
 
     assert frame_ids == expected_frame_ids
     assert torch.equal(labels, expected_labels)
+    assert invalid_frames == expected_invalid_frames

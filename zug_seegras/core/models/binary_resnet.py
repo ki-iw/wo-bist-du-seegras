@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 from torchvision import models
 from torchvision.models.resnet import ResNet18_Weights
@@ -18,5 +17,4 @@ class BinaryResNet18(nn.Module):
         return model
 
     def forward(self, x):
-        x = self.model(x)
-        return torch.sigmoid(x)
+        return self.model(x)

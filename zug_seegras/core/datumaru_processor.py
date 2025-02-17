@@ -1,13 +1,11 @@
 import json
 
-import torch
+from zug_seegras.logger import getLogger
+
+log = getLogger(__name__)
 
 
 class DatumaroProcessor:
-    def __init__(self, json_file: str):
-        self.json_file = json_file
-        self.json_data = self.load_json(json_file)
-
     @staticmethod
     def load_json(json_file: str) -> dict[str, any]:
         try:
@@ -20,38 +18,38 @@ class DatumaroProcessor:
 
         return json_data
 
-    def convert_datumaru(self) -> tuple[list[int], torch.Tensor]:
-        items = self.json_data.get("items", [])
+    def get_label_name(self, label_id: int) -> str:
+        return self.label_mapping[label_id]
+
+    def get_frame_labels(self, json_file: str) -> tuple[list[int], list[int], list[int]]:
+        json_data = self.load_json(json_file)
+        self.label_mapping = json_data["categories"]["label"]["labels"]
+        items = json_data.get("items", [])
         frame_ids = []
         labels = []
+        invalid_frames = []
 
-        last_labeled_index = -1
-        for index, item in enumerate(items):
-            annotations = item.get("annotations", [])
-            if any(annotation.get("type") == "bbox" for annotation in annotations):
-                last_labeled_index = index
-
-        for index, item in enumerate(items):
-            if index > last_labeled_index:
-                break
-
+        for item in items:
             item_id = int(item.get("attr").get("frame"))
             annotations = item.get("annotations", [])
 
             if not annotations:
-                frame_ids.append(item_id)
-                labels.append(0)
                 continue
 
-            has_bbox = any(annotation.get("type") == "bbox" for annotation in annotations)
-
-            if not has_bbox:
+            if len(annotations) > 1:
+                log.info(f"Number of labels in frame {item_id}: {len(annotations)}")
+                invalid_frames.append(item_id)
                 continue
 
             frame_ids.append(item_id)
-            labels.append(1)
+            label_id = annotations[0].get("label_id")
+            labels.append(label_id)
 
-        return frame_ids, torch.tensor(labels, dtype=torch.int)
+        return frame_ids, labels, invalid_frames
 
-    def get_frame_labels(self) -> tuple[list[int], torch.Tensor]:
-        return self.convert_datumaru()
+
+if __name__ == "__main__":
+    datumaro_processor = DatumaroProcessor()
+    frame_ids, labels, invalid_frames = datumaro_processor.get_frame_labels(
+        "tmp/annotations/DJI_20240923162615_0002_D_compressed50_10to12.json"
+    )

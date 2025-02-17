@@ -10,6 +10,6 @@ training:
   num_epochs: 20
   optimizer: Adam
   scheduler: step_lr
-  loss_function: BinaryCrossEntropy
+  loss_function: BCEWithLogitsLoss
   step_size: 5
   shuffle: true

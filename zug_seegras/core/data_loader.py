@@ -4,11 +4,13 @@ from typing import Optional
 from torch.utils.data import DataLoader, random_split
 from torchvision.transforms import Compose
 
+from zug_seegras import config
+
 
 def get_file_paths(dataset_dir: str):
     dataset_path = Path(dataset_dir)
 
-    video_file = next(dataset_path.glob("input_video/*.mov"), None)
+    video_file = next(dataset_path.glob("input_video/*.MP4"), None)
     label_json_path = next(dataset_path.glob("input_label/*.json"), None)
     output_frames_dir = dataset_path / "output"
 
@@ -30,18 +32,15 @@ def get_dataloader(dataset, batch_size: int, shuffle: bool):
 
 def create_dataloaders(
     dataset_class,
-    dataset_dir: str,
     transform: Optional[Compose] = None,  # noqa: UP007
     batch_size: int = 4,
     train_test_ratio: float = 0.8,
     shuffle: bool = True,
 ) -> tuple[DataLoader, DataLoader]:
-    video_file, label_json_path, output_frames_dir = get_file_paths(dataset_dir)
-
     dataset = dataset_class(
-        video_file=str(video_file),
-        label_dir=str(label_json_path),
-        output_dir=str(output_frames_dir),
+        video_files=config.dataset.video_files,
+        annotations_dir=config.dataset.annotations_dir,  # directory containing json files named after the video files
+        frames_dir=config.dataset.frames_dir,
         transform=transform,
     )
 

@@ -7,12 +7,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from zug_seegras.core.config_loader import get_model_config
+from zug_seegras import config
 from zug_seegras.core.evaluator import Evaluator
 from zug_seegras.core.model_factory import ModelFactory
-from zug_seegras.logger import getLogger
-
-log = getLogger(__name__)
 
 
 class Trainer:
@@ -23,7 +20,7 @@ class Trainer:
         test_loader: DataLoader,
         checkpoint_path: Optional[str] = None,  # noqa: UP007
     ):
-        self.config = get_model_config(model_name)
+        self.config = config
 
         if not self.config["model"]["trainable"]:
             raise ValueError("The model is not trainable!")  # noqa: TRY003
@@ -58,8 +55,8 @@ class Trainer:
         loss_name = self.config.get("training").get("loss_function", "CrossEntropyLoss")
         if loss_name == "CrossEntropyLoss":
             return nn.CrossEntropyLoss()
-        elif loss_name == "BinaryCrossEntropy":
-            return nn.BCELoss()
+        elif loss_name == "BCEWithLogitsLoss":
+            return nn.BCEWithLogitsLoss()
         raise NotImplementedError(f"Loss function '{loss_name}' is not implemented.")
 
     def initialize_optimizer(self):
@@ -100,8 +97,7 @@ class Trainer:
             tqdm.write(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {running_loss / len(self.train_loader):.4f}")
 
             if (epoch + 1) % n_eval == 0:
-                accuracy, f1_score = self.evaluator.run_evaluation(model=self.model, dataloader=self.test_loader)
-                tqdm.write(f"Epoch [{epoch + 1}], Accuracy: {accuracy:.4f}, F1 Score: {f1_score:.4f}")
+                self.evaluator.run_evaluation(model=self.model, dataloader=self.test_loader)
 
                 checkpoint_path = os.path.join(model_checkpoint_dir, f"{model_name}_{epoch + 1}.pth")
                 self.model_factory.save_checkpoint(self.model, self.optimizer, checkpoint_path, epoch + 1)

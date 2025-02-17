@@ -2,9 +2,11 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
+import torcheval.metrics.functional as mf
 from torch.utils.data import DataLoader
-from torcheval.metrics.functional import multiclass_f1_score
+from tqdm import tqdm
 
+from zug_seegras import config
 from zug_seegras.core.fiftyone_logger import FiftyOneLogger
 from zug_seegras.core.model_factory import ModelFactory
 
@@ -36,26 +38,6 @@ class Evaluator:
         if self.save_fiftyone:
             self.fiftyone_logger = FiftyOneLogger()
 
-    @staticmethod
-    def calculate_accuracy(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
-        labels = labels.to(device)
-        predictions = predictions.to(device)
-
-        if labels.size(0) != predictions.size(0):
-            raise ValueError("Tensor size mismatch!")  # noqa: TRY003
-
-        correct = torch.sum(labels == predictions).item()
-        total = labels.size(0)
-        return correct / total
-
-    @staticmethod
-    def calculate_f1_score(labels: torch.Tensor, predictions: torch.Tensor, device="cpu") -> float:
-        labels = labels.to(device)
-        predictions = predictions.to(device)
-
-        n_classes = int(torch.unique(predictions).size(0))
-        return multiclass_f1_score(labels, predictions, num_classes=n_classes).item()
-
     def run_evaluation(
         self,
         model: Optional[nn.Module] = None,  # noqa: UP007
@@ -78,7 +60,13 @@ class Evaluator:
 
                 outputs = model(inputs)
 
-                _, predicted = torch.max(outputs, 1)
+                # binary classification
+                if config.model.n_classes == 1:
+                    probs = torch.sigmoid(outputs).squeeze()
+                    predicted = (probs > 0.5).long()
+                else:
+                    # TODO check if this is still correct? We dont have multiclasses though
+                    _, predicted = torch.max(outputs, 1)
 
                 all_labels.append(labels)
                 all_predictions.append(predicted)
@@ -89,7 +77,15 @@ class Evaluator:
         all_labels = torch.cat(all_labels)
         all_predictions = torch.cat(all_predictions)
 
-        accuracy = self.calculate_accuracy(all_labels, all_predictions, device=self.device)
-        f1_score = self.calculate_f1_score(all_labels, all_predictions, device=self.device)
+        # TODO infer n_classes from somewhere else
+        n_classes = int(torch.unique(all_labels).size(0))
+        average = "macro" if n_classes == 2 else "micro"
+        accuracy = mf.multiclass_accuracy(all_labels, all_predictions, num_classes=n_classes, average=average).item()
+        precision = mf.multiclass_precision(all_labels, all_predictions, num_classes=n_classes, average=average).item()
+        recall = mf.multiclass_recall(all_labels, all_predictions, num_classes=n_classes, average=average).item()
+        f1_score = mf.multiclass_f1_score(all_labels, all_predictions, num_classes=n_classes, average=average).item()
 
+        tqdm.write(
+            f"Accuracy: {accuracy:.4f}, F1 Score: {f1_score:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}"
+        )
         return accuracy, f1_score

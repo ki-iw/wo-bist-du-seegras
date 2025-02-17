@@ -1,10 +1,15 @@
 # Common settings for all models
 
+log_level: DEBUG
+
 dataset:
   name: Seegras
-  video_file: "data/input_video/trimmed_testvideo.mov"
-  label_dir: "data/input_label/default.json"
-  output_dir: "data/output"
+  video_files:
+    - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_14to16.MP4"
+    - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_10to12.MP4"
+    - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_12to14.MP4"
+  annotations_dir: "tmp/annotations"
+  frames_dir: "tmp/output"
 
 evaluation:
   batch_size: 16
