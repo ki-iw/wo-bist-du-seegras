@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 import torch
@@ -18,15 +18,7 @@ def mock_datumaro_processor():
 
 
 @pytest.fixture
-def mock_video_processor():
-    with patch("zug_seegras.core.datasets.seegras.VideoProcessor") as MockVideoProcessor:
-        mock_instance = MockVideoProcessor.return_value
-        mock_instance.extract_and_save_frames = MagicMock()
-        yield MockVideoProcessor
-
-
-@pytest.fixture
-def mock_dataset(tmp_path, mock_datumaro_processor, mock_video_processor):
+def mock_dataset(tmp_path, mock_datumaro_processor):
     output_dir = tmp_path / "output"
     output_dir.mkdir()
 
@@ -37,10 +29,9 @@ def mock_dataset(tmp_path, mock_datumaro_processor, mock_video_processor):
     dummy_image.save(image_dir / "frame_00002.jpg")
 
     return SeegrasDataset(
-        video_file="testvideo.mov",
-        label_dir="mock_label_dir",
-        output_dir=output_dir,
-        processor=mock_datumaro_processor,
+        video_files=["testvideo.mov"],
+        annotations_dir="mock_label_dir",
+        frames_dir=output_dir,
     )
 
 

@@ -26,16 +26,11 @@ def video_processor_fixture(tmp_path):
     output_dir = tmp_path / "output_frames"
 
     create_dummy_video(str(video_path), num_frames=10)
-    frame_ids = [0, 2, 4, 6, 8]
 
-    yield VideoProcessor(video_file=str(video_path), frame_ids=frame_ids, output_dir=str(output_dir))
+    video_processor = VideoProcessor()
+    video_processor.set_output_path(output_dir, Path(video_path).stem)
 
-
-def test_get_total_frames_happy_case(video_processor_fixture):
-    want = 10
-    got = video_processor_fixture._get_total_frames()
-
-    assert got == want
+    yield video_processor
 
 
 def test_get_frame_path_happy_case(tmp_path, video_processor_fixture):

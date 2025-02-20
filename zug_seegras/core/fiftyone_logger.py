@@ -30,6 +30,16 @@ class FiftyOneLogger:
         for i in range(len(inputs)):
             self.add_sample(image_path=input_path[i], label=labels[i], prediction=predicted[i])
 
+    def add_image(self, image_path: str, attributes: dict | None = None) -> None:
+        sample = fo.Sample(filepath=image_path)
+
+        # TODO make this safer
+        for key, att in attributes.items():
+            sample[key] = att
+
+        self.dataset.add_sample(sample, expand_schema=True)
+        self.dataset.save()
+
     def add_sample(self, image_path: str, label: torch.Tensor, prediction: torch.Tensor) -> None:
         if self.dataset.match({"filepath": image_path}).count() > 0:
             return

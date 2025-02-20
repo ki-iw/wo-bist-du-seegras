@@ -9,7 +9,7 @@ dataset:
     - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_10to12.MP4"
     - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_12to14.MP4"
   annotations_dir: "tmp/annotations"
-  frames_dir: "tmp/output"
+  frames_dir: "tmp/frames"
 
 evaluation:
   batch_size: 16
@@ -17,3 +17,6 @@ evaluation:
 
 checkpoint:
   dir: "data/model_checkpoints"
+
+fiftyone:
+  dataset_dir: "tmp/fiftyone"
