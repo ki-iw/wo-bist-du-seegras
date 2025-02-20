@@ -2,6 +2,7 @@ from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
 from zug_seegras.core.data_loader import create_dataloaders
 from zug_seegras.core.datasets.seegras import SeegrasDataset
+from zug_seegras.core.evaluator import Evaluator
 from zug_seegras.core.fiftyone_logger import FiftyOneLogger
 from zug_seegras.core.trainer import Trainer
 
@@ -23,13 +24,21 @@ def main(model_name: str):
 
     trainer.train()
 
-    # final evaluation with fiftyone
+    # final evaluation with latest model
     trainer.evaluator.save_fiftyone = True
-    trainer.evaluator.fiftyone_logger = FiftyOneLogger()
+    trainer.evaluator.fiftyone_logger = FiftyOneLogger("Latest model")
 
     trainer.evaluator.run_evaluation(model=trainer.model, dataloader=trainer.test_loader)
 
-    trainer.evaluator.fiftyone_logger.visualize()
+    # final evaluation with best model
+    evaluator = Evaluator(
+        model_name=model_name, checkpoint_path=trainer.best_checkpoint, n_classes=trainer.model.n_classes
+    )
+    evaluator.save_fiftyone = True
+    evaluator.fiftyone_logger = FiftyOneLogger("Best model")
+    evaluator.run_evaluation(model=trainer.model, dataloader=trainer.test_loader)
+
+    evaluator.fiftyone_logger.visualize()
 
 
 if __name__ == "__main__":

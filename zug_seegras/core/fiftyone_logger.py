@@ -30,7 +30,10 @@ class FiftyOneLogger:
         for i in range(len(inputs)):
             self.add_sample(image_path=input_path[i], label=labels[i], prediction=predicted[i])
 
-    def add_image(self, image_path: str, attributes: dict | None = None) -> None:
+    def add_image(self, image_path: str, attributes: dict) -> None:
+        if self.dataset.match({"filepath": image_path}).count() > 0:
+            return
+
         sample = fo.Sample(filepath=image_path)
 
         # TODO make this safer
@@ -46,8 +49,8 @@ class FiftyOneLogger:
 
         sample = fo.Sample(filepath=image_path)
 
-        label_str = "background" if label == 0 else "Seegras"
-        prediction_str = "background" if prediction == 0 else "Seegras"
+        label_str = "seagrass" if label == 0 else "background"
+        prediction_str = "seagrass" if prediction == 0 else "background"
 
         sample["ground_truth"] = fo.Classification(label=label_str)
         sample["predictions"] = fo.Classification(label=prediction_str)

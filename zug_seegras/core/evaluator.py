@@ -6,7 +6,6 @@ import torcheval.metrics.functional as mf
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from zug_seegras import config
 from zug_seegras.core.fiftyone_logger import FiftyOneLogger
 from zug_seegras.core.model_factory import ModelFactory
 
@@ -61,7 +60,7 @@ class Evaluator:
                 outputs = model(inputs)
 
                 # binary classification
-                if config.model.n_classes == 1:
+                if model.n_classes == 1:
                     probs = torch.sigmoid(outputs).squeeze()
                     predicted = (probs > 0.5).long()
                 else:
@@ -77,7 +76,7 @@ class Evaluator:
         all_labels = torch.cat(all_labels)
         all_predictions = torch.cat(all_predictions)
 
-        # TODO infer n_classes from somewhere else
+        # TODO infer n_classes from somewhere else. in case of binary, model.n_classes returns n_classes=1
         n_classes = int(torch.unique(all_labels).size(0))
         average = "macro" if n_classes == 2 else "micro"
         accuracy = mf.multiclass_accuracy(all_labels, all_predictions, num_classes=n_classes, average=average).item()
@@ -88,4 +87,4 @@ class Evaluator:
         tqdm.write(
             f"Accuracy: {accuracy:.4f}, F1 Score: {f1_score:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}"
         )
-        return accuracy, f1_score
+        return accuracy, f1_score, precision, recall

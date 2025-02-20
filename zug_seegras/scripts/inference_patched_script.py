@@ -4,7 +4,7 @@ from pathlib import Path
 import torch
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-from zug_seegras import config
+# from zug_seegras import config
 from zug_seegras.core.data_loader import create_dataloaders
 from zug_seegras.core.datasets.seegras import SeegrasDataset
 from zug_seegras.core.fiftyone_logger import FiftyOneLogger
@@ -15,7 +15,7 @@ from zug_seegras.utils import cropper, denormalize, img_to_grid, single_image_pr
 log = getLogger(__name__)
 
 
-def main(save_path="data/Seegras_v1/patched_preds"):
+def main(save_path="data/Seegras_v1/patched_preds", max_images=10):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # TODO put this in config
@@ -40,11 +40,13 @@ def main(save_path="data/Seegras_v1/patched_preds"):
     seaclip.eval()
     seabag_ensemble.eval()
 
-    os.environ["FIFTYONE_DATABASE_DIR"] = config.fiftyone.dataset_dir
     fiftyone_logger = FiftyOneLogger(dataset_name="patched_preds")
-
+    max_images = len(test_loader) * test_loader.batch_size if max_images < 0 else max_images
     with torch.no_grad():
         for i, batch in enumerate(test_loader):
+            if i + 1 > max_images:
+                break
+
             inputs, labels, paths = batch
 
             log.info(f"Processing batch {i} with {len(inputs)} images.")
@@ -94,11 +96,8 @@ def main(save_path="data/Seegras_v1/patched_preds"):
             fiftyone_logger.add_image(cos_name, {"predicted_by": "seafeats"})
             fiftyone_logger.add_image(ensemble_name, {"predicted_by": "ensemble"})
 
-            if i > 2:
-                break
-
         fiftyone_logger.visualize()
 
 
 if __name__ == "__main__":
-    main(save_path="tmp/patched")
+    main(save_path="tmp/patched", max_images=-1)

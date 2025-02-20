@@ -7,7 +7,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from zug_seegras import config
+from zug_seegras.core.config_loader import get_model_config
 from zug_seegras.core.evaluator import Evaluator
 from zug_seegras.core.model_factory import ModelFactory
 
@@ -20,7 +20,7 @@ class Trainer:
         test_loader: DataLoader,
         checkpoint_path: Optional[str] = None,  # noqa: UP007
     ):
-        self.config = config
+        self.config = get_model_config(model_name)
 
         if not self.config["model"]["trainable"]:
             raise ValueError("The model is not trainable!")  # noqa: TRY003
@@ -34,7 +34,7 @@ class Trainer:
         self.criterion = self.initialize_loss_function()
         self.model = self.initialize_model(checkpoint_path)
         self.optimizer = self.initialize_optimizer()
-
+        self.best_f1_score = 0
         self.evaluator = Evaluator(device=self.device)
 
     def initialize_model(self, checkpoint_path: str):
@@ -97,10 +97,12 @@ class Trainer:
             tqdm.write(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {running_loss / len(self.train_loader):.4f}")
 
             if (epoch + 1) % n_eval == 0:
-                self.evaluator.run_evaluation(model=self.model, dataloader=self.test_loader)
+                _, f1_score, _, _ = self.evaluator.run_evaluation(model=self.model, dataloader=self.test_loader)
 
                 checkpoint_path = os.path.join(model_checkpoint_dir, f"{model_name}_{epoch + 1}.pth")
                 self.model_factory.save_checkpoint(self.model, self.optimizer, checkpoint_path, epoch + 1)
+
+                self.best_checkpoint = checkpoint_path if f1_score > self.best_f1_score else self.best_checkpoint
                 tqdm.write(f"Model checkpoint saved at {checkpoint_path}")
 
             self.current_epoch += 1
