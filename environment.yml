@@ -1,4 +1,4 @@
-name: bom-ZUG-seegras-new
+name: baltic-seagrass
 channels:
   - conda-forge
   - defaults

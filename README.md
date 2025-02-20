@@ -6,25 +6,17 @@ A project to train, evaluate and run vision models to detect seagrass from image
 
 To get started, let's create a Conda environment, and install dependencies into this environment.
 
-1. Change into the newly created project folder `ZUG-seegras`, and initialize the Git repo
-    ```bash
-    $ git init -b main
-    ```
 1. Create a new Conda environment:
     ```bash
     $ conda env create --file environment.yml
     ```
-1. Activate the new environment!
+2. Activate the new environment!
     ```bash
     $ conda activate bom-ZUG-seegras
     ```
-1. Install the project dependencies into the newly created Conda environment.
+3. Install the project dependencies into the newly created Conda environment.
     ```bash
     $ make install
-    ```
-1. Lastly, run the project
-    ```bash
-    $ python -m zug_seegras
     ```
 
 ## Repository Structure
@@ -94,3 +86,5 @@ $ make test
 When running the evaluator with the argument `save_fiftyone=True`, the data is saved to a FiftyOne dataset. To view the dataset in the FiftyOne web UI, execute the `fiftyone_logger.py` script.
 
 If you are working on the KI-IW remote machine, you may need to manually forward port `5154` to your local machine. Once the port is forwarded, you can access the FiftyOne web interface by navigating to [http://localhost:5154/](http://localhost:5154/) in your browser.
+
+> Known Issue:
