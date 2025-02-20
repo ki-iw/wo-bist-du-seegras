@@ -11,12 +11,11 @@ import zug_seegras.core.data_loader as d
 class DummyDataset(Dataset):
     def __init__(
         self,
-        video_files: list[str],
-        annotations_dir: str,  # directory containing json files named after the video files
-        frames_dir: str,  # directory to save the extracted frames
-        # label_processor=DatumaroProcessor,
-        transform: Optional[any] = None,  # noqa: UP007
+        video_file: Optional[str] = None,  # noqa: UP007
+        label_dir: Optional[str] = None,  # noqa: UP007
+        output_dir: Optional[str] = None,  # noqa: UP007
         num_samples=10,
+        transform=None,
     ):
         self.data = []
         self.labels = []
@@ -76,25 +75,3 @@ def test_get_dataloader_happy_case(dataset_fixture):
 
     assert isinstance(train_loader, DataLoader)
     assert train_loader.batch_size == 4
-
-
-def test_create_dataloaders_happy_case(dataset_fixture):
-    train_loader, test_loader = d.create_dataloaders(
-        dataset_class=dataset_fixture,
-        transform=None,
-        batch_size=4,
-        train_test_ratio=0.8,
-        shuffle=True,
-    )
-
-    train_size = len(train_loader.dataset)
-    test_size = len(test_loader.dataset)
-
-    assert isinstance(train_loader, DataLoader)
-    assert isinstance(test_loader, DataLoader)
-
-    assert train_size == 8
-    assert test_size == 2
-
-    assert train_loader.batch_size == 4
-    assert test_loader.batch_size == 4

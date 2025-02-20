@@ -57,6 +57,8 @@ class Trainer:
             return nn.CrossEntropyLoss()
         elif loss_name == "BCEWithLogitsLoss":
             return nn.BCEWithLogitsLoss()
+        elif loss_name == "BinaryCrossEntropy":
+            return nn.BCELoss()
         raise NotImplementedError(f"Loss function '{loss_name}' is not implemented.")
 
     def initialize_optimizer(self):

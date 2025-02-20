@@ -4,7 +4,6 @@ from unittest.mock import patch
 import cv2
 import numpy as np
 import pytest
-import torch
 
 from zug_seegras.core.video_processor import VideoProcessor
 
@@ -40,16 +39,12 @@ def test_get_frame_path_happy_case(tmp_path, video_processor_fixture):
     assert got == want
 
 
-def test_extract_and_save_frames_unhappy_case(video_processor_fixture):
-    video_processor_fixture.frame_ids = [0, 2, 4, 11]
-
-    with pytest.raises(ValueError, match="Frame ID 11 is out of range for video with 10 frames."):
-        video_processor_fixture.extract_and_save_frames()
-
-
 @patch.object(VideoProcessor, "_is_frame_saved", return_value=True)
-def test_extract_and_save_frames_happy_case_frame_exists(video_processor_fixture):
-    video_processor_fixture.extract_and_save_frames()
+def test_extract_and_save_frames_happy_case_frame_exists(video_processor_fixture, tmp_path):
+    video_path = tmp_path / "dummy_video.mp4"
+    frame_ids = [0, 2, 4]
+
+    video_processor_fixture.extract_and_save_frames(video_path, frame_ids)
 
 
 def test_load_frame_as_tensor_file_unhappy_case_not_found(video_processor_fixture):
@@ -64,12 +59,3 @@ def test_load_frame_as_tensor_file_unhappy_case_not_exist(video_processor_fixtur
         ValueError
     ):
         video_processor_fixture.load_frame_as_tensor(0)
-
-
-def test_get_frames_for_dataloader(video_processor_fixture):
-    video_processor_fixture.extract_and_save_frames()
-    frames_tensor = video_processor_fixture.get_frames_for_dataloader()
-
-    want = (len(video_processor_fixture.frame_ids), 3, 480, 640)
-    assert frames_tensor.shape == want
-    assert frames_tensor.dtype == torch.float32

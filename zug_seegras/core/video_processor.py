@@ -60,7 +60,3 @@ class VideoProcessor:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame_tensor = torch.tensor(frame, dtype=torch.float32).permute(2, 0, 1)
         return frame_tensor
-
-    def get_frames_for_dataloader(self) -> torch.Tensor:
-        frame_list = [self.load_frame_as_tensor(frame_id) for frame_id in self.frame_ids]
-        return torch.stack(frame_list)

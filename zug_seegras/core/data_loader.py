@@ -1,23 +1,9 @@
-from pathlib import Path
 from typing import Optional
 
 from torch.utils.data import DataLoader, random_split
 from torchvision.transforms import Compose
 
 from zug_seegras import config
-
-
-def get_file_paths(dataset_dir: str):
-    dataset_path = Path(dataset_dir)
-
-    video_file = next(dataset_path.glob("input_video/*.MP4"), None)
-    label_json_path = next(dataset_path.glob("input_label/*.json"), None)
-    output_frames_dir = dataset_path / "output"
-
-    if video_file is None or label_json_path is None:
-        raise FileNotFoundError(f"Video file or label file not found in {dataset_path}.")  # noqa: TRY003
-
-    return video_file, label_json_path, output_frames_dir
 
 
 def split_dataset(dataset, train_test_ratio: float):
