@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import torch
 
-from zug_seegras import logger
+from baltic_seagrass import logger
 
 
 class VideoProcessor:

@@ -7,9 +7,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from zug_seegras.core.config_loader import get_model_config
-from zug_seegras.core.evaluator import Evaluator
-from zug_seegras.core.model_factory import ModelFactory
+from baltic_seagrass.core.config_loader import get_model_config
+from baltic_seagrass.core.evaluator import Evaluator
+from baltic_seagrass.core.model_factory import ModelFactory
 
 
 class Trainer:

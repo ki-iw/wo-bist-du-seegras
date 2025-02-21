@@ -4,13 +4,13 @@ from pathlib import Path
 import torch
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-# from zug_seegras import config
-from zug_seegras.core.data_loader import create_dataloaders
-from zug_seegras.core.datasets.seegras import SeegrasDataset
-from zug_seegras.core.fiftyone_logger import FiftyOneLogger
-from zug_seegras.core.model_factory import ModelFactory
-from zug_seegras.logger import getLogger
-from zug_seegras.utils import cropper, denormalize, img_to_grid, single_image_preds
+# from baltic_seagrass import config
+from baltic_seagrass.core.data_loader import create_dataloaders
+from baltic_seagrass.core.datasets.seegras import SeegrasDataset
+from baltic_seagrass.core.fiftyone_logger import FiftyOneLogger
+from baltic_seagrass.core.model_factory import ModelFactory
+from baltic_seagrass.logger import getLogger
+from baltic_seagrass.utils import cropper, denormalize, img_to_grid, single_image_preds
 
 log = getLogger(__name__)
 

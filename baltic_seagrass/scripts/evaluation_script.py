@@ -1,10 +1,10 @@
 import torch
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-from zug_seegras.core.data_loader import create_dataloaders
-from zug_seegras.core.datasets.seegras import SeegrasDataset
-from zug_seegras.core.evaluator import Evaluator
-from zug_seegras.logger import getLogger
+from baltic_seagrass.core.data_loader import create_dataloaders
+from baltic_seagrass.core.datasets.seegras import SeegrasDataset
+from baltic_seagrass.core.evaluator import Evaluator
+from baltic_seagrass.logger import getLogger
 
 log = getLogger(__name__)
 

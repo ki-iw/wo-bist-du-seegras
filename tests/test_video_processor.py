@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import pytest
 
-from zug_seegras.core.video_processor import VideoProcessor
+from baltic_seagrass.core.video_processor import VideoProcessor
 
 
 def create_dummy_video(video_path: str, num_frames: int = 10, width: int = 640, height: int = 480):

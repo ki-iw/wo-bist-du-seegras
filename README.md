@@ -1,4 +1,4 @@
-# ZUG-seegras
+# baltic-seagrass
 
 A project to train, evaluate and run vision models to detect seagrass from images and video files.
 
@@ -12,7 +12,7 @@ To get started, let's create a Conda environment, and install dependencies into 
     ```
 2. Activate the new environment!
     ```bash
-    $ conda activate bom-ZUG-seegras
+    $ conda activate baltic-seagrass
     ```
 3. Install the project dependencies into the newly created Conda environment.
     ```bash
@@ -21,9 +21,9 @@ To get started, let's create a Conda environment, and install dependencies into 
 
 ## Repository Structure
 
-The repository is organized into the following key directories and scripts under the `zug_seegras/` folder:
+The repository is organized into the following key directories and scripts under the `baltic_seagrass/` folder:
 
-### `zug_seegras/`
+### `baltic_seagrass/`
 This is the main directory containing the productive code and key scripts for the project.
 
 - **`core/`**: Contains the core logic and essential code for the project.

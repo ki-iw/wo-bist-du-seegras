@@ -1,13 +1,13 @@
 [project]
-name = "zug_seegras"
+name = "baltic_seagrass"
 version = "0.0.1"
 description = "This is a template repository for a Birds on Mars project."
 authors = [{name = "Birds on Mars", email = "info@birdsonmars.com"}]
 readme = "README.md"
 packages = [
-  {include = "zug_seegras"}
+  {include = "baltic_seagrass"}
 ]
-scripts = { zug_seegras_cli = "zug_seegras.cli:main" }
+scripts = { baltic_seagrass_cli = "baltic_seagrass.cli:main" }
 requires-python = ">=3.9.1,<4.0"
 
 dynamic = ["dependencies"]

@@ -3,7 +3,7 @@ from typing import Optional
 from torch.utils.data import DataLoader, random_split
 from torchvision.transforms import Compose
 
-from zug_seegras import config
+from baltic_seagrass import config
 
 
 def split_dataset(dataset, train_test_ratio: float):

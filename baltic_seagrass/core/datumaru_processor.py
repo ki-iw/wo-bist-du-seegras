@@ -1,6 +1,6 @@
 import json
 
-from zug_seegras.logger import getLogger
+from baltic_seagrass.logger import getLogger
 
 log = getLogger(__name__)
 

@@ -14,8 +14,8 @@ from PIL import Image
 from torchvision import transforms as T
 from tqdm import tqdm
 
-from zug_seegras import getLogger
-from zug_seegras.utils import convert_msec
+from baltic_seagrass import getLogger
+from baltic_seagrass.utils import convert_msec
 
 warnings.filterwarnings("ignore")  # Suppress warnings
 log = getLogger(__name__)

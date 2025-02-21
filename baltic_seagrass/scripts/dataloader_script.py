@@ -3,8 +3,8 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-from zug_seegras.core.datasets.seegras import SeegrasDataset
-from zug_seegras.logger import getLogger
+from baltic_seagrass.core.datasets.seegras import SeegrasDataset
+from baltic_seagrass.logger import getLogger
 
 log = getLogger(__name__)
 

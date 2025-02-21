@@ -2,11 +2,11 @@ import warnings
 
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-from zug_seegras.core.data_loader import create_dataloaders
-from zug_seegras.core.datasets.seegras import SeegrasDataset
-from zug_seegras.core.evaluator import Evaluator
-from zug_seegras.core.fiftyone_logger import FiftyOneLogger
-from zug_seegras.core.trainer import Trainer
+from baltic_seagrass.core.data_loader import create_dataloaders
+from baltic_seagrass.core.datasets.seegras import SeegrasDataset
+from baltic_seagrass.core.evaluator import Evaluator
+from baltic_seagrass.core.fiftyone_logger import FiftyOneLogger
+from baltic_seagrass.core.trainer import Trainer
 
 warnings.filterwarnings("ignore", category=UserWarning, message="The reduce argument of torch.scatter")
 

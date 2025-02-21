@@ -5,7 +5,7 @@ import pytest
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
-import zug_seegras.core.data_loader as d
+import baltic_seagrass.core.data_loader as d
 
 
 class DummyDataset(Dataset):

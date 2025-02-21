@@ -5,7 +5,7 @@ import pytest
 import yaml
 
 from tests.utils import create_data_loader
-from zug_seegras.core.trainer import Trainer
+from baltic_seagrass.core.trainer import Trainer
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def dummy_test_loader():
     return create_data_loader(batch_size=32, num_samples=20, image_size=(3, 512, 512))
 
 
-@pytest.mark.parametrize("config_path", os.listdir("zug_seegras/config"))
+@pytest.mark.parametrize("config_path", os.listdir("baltic_seagrass/config"))
 def test_trainer_train_happy_case_integration(config_path, dummy_train_loader, dummy_test_loader):
     config_path = Path(config_path)
     model_name = config_path.stem
@@ -26,7 +26,7 @@ def test_trainer_train_happy_case_integration(config_path, dummy_train_loader, d
     if model_name in ["base"]:
         pytest.skip(f"Skip config file: {config_path.name}")
 
-    config_file_path = Path("zug_seegras/config") / config_path
+    config_file_path = Path("baltic_seagrass/config") / config_path
     with open(config_file_path, "r") as config_file:  # noqa: UP015
         config = yaml.safe_load(config_file)
 

@@ -8,7 +8,7 @@ def load_config(config_path: str):
         return yaml.safe_load(file)
 
 
-def get_model_config(model_name: str, base_config_path: str = "zug_seegras/config/"):
+def get_model_config(model_name: str, base_config_path: str = "baltic_seagrass/config/"):
     base_config = load_config(os.path.join(base_config_path, "base.yml"))
 
     model_config_path = os.path.join(base_config_path, f"{model_name}.yml")

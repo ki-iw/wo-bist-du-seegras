@@ -3,7 +3,7 @@ import os
 import pytest
 import yaml
 
-from zug_seegras.core.config_loader import get_model_config, load_config
+from baltic_seagrass.core.config_loader import get_model_config, load_config
 
 
 @pytest.fixture

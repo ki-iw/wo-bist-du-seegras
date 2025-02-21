@@ -6,8 +6,8 @@ import torcheval.metrics.functional as mf
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from zug_seegras.core.fiftyone_logger import FiftyOneLogger
-from zug_seegras.core.model_factory import ModelFactory
+from baltic_seagrass.core.fiftyone_logger import FiftyOneLogger
+from baltic_seagrass.core.model_factory import ModelFactory
 
 
 class Evaluator:

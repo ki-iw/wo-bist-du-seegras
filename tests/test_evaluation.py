@@ -1,7 +1,7 @@
 import pytest
 
 from tests.utils import create_data_loader
-from zug_seegras.core.evaluator import Evaluator as e
+from baltic_seagrass.core.evaluator import Evaluator as e
 
 
 @pytest.fixture

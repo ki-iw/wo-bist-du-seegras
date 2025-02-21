@@ -4,8 +4,8 @@ import pytest
 import torch
 import torch.nn as nn
 
-from zug_seegras.core.model_factory import ModelFactory
-from zug_seegras.core.models.bag_of_seagrass import SeaCLIPModel, SeaFeatsModel
+from baltic_seagrass.core.model_factory import ModelFactory
+from baltic_seagrass.core.models.bag_of_seagrass import SeaCLIPModel, SeaFeatsModel
 
 
 @pytest.mark.parametrize(

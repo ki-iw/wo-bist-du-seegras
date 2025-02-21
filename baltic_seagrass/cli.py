@@ -1,11 +1,11 @@
 import argparse
 
-from zug_seegras import __version__, getLogger
+from baltic_seagrass import __version__, getLogger
 
 log = getLogger(__name__)
 
 parser = argparse.ArgumentParser(
-    description="zug_seegras",
+    description="baltic_seagrass",
     epilog=f"Version {__version__}",
 )
 parser.add_argument(

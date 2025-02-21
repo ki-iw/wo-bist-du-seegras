@@ -3,10 +3,10 @@ from typing import ClassVar, Optional
 import torch
 import torch.nn as nn
 
-from zug_seegras.core.models.bag_of_seagrass import SeabagEnsemble, SeaCLIPModel, SeaFeatsModel
-from zug_seegras.core.models.binary_resnet import BinaryResNet18
-from zug_seegras.core.models.grounding_dino import GroundingDinoClassifier
-from zug_seegras.logger import getLogger
+from baltic_seagrass.core.models.bag_of_seagrass import SeabagEnsemble, SeaCLIPModel, SeaFeatsModel
+from baltic_seagrass.core.models.binary_resnet import BinaryResNet18
+from baltic_seagrass.core.models.grounding_dino import GroundingDinoClassifier
+from baltic_seagrass.logger import getLogger
 
 log = getLogger(__name__)
 

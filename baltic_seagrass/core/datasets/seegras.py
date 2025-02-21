@@ -6,9 +6,9 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision.transforms.functional import pil_to_tensor
 
-from zug_seegras import logger
-from zug_seegras.core.datumaru_processor import DatumaroProcessor
-from zug_seegras.core.video_processor import VideoProcessor
+from baltic_seagrass import logger
+from baltic_seagrass.core.datumaru_processor import DatumaroProcessor
+from baltic_seagrass.core.video_processor import VideoProcessor
 
 
 # TODO change to seagrass

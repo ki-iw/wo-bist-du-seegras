@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from zug_seegras.core.datumaru_processor import DatumaroProcessor as D
+from baltic_seagrass.core.datumaru_processor import DatumaroProcessor as D
 
 sample_datumaro_json = {
     "categories": {

@@ -1,4 +1,4 @@
-from zug_seegras import BaseClass, getLogger
+from baltic_seagrass import BaseClass, getLogger
 
 log = getLogger(__name__)
 

@@ -24,7 +24,7 @@ check:
 
 test:
 	@echo "🚦 Testing code"
-	@poetry run pytest -vv -p no:warnings --cov=zug_seegras/core  tests
+	@poetry run pytest -vv -p no:warnings --cov=baltic_seagrass/core  tests
 
 build: clean-build
 	@echo "🚀 Creating wheel file"
