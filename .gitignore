@@ -168,6 +168,7 @@ cython_debug/
 .DS_Store
 
 # Project specific
-data/
+data/*
 weights/
 tmp/
+!.gitkeep

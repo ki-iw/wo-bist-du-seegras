@@ -1,6 +1,7 @@
 import os
 
 import yaml
+from dotmap import DotMap
 
 
 def load_config(config_path: str):
@@ -19,4 +20,4 @@ def get_model_config(model_name: str, base_config_path: str = "baltic_seagrass/c
 
     base_config.update(model_config)
 
-    return base_config
+    return DotMap(base_config)

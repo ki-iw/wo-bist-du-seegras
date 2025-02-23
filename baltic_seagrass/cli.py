@@ -1,23 +1,24 @@
-import argparse
+import typer
 
-from baltic_seagrass import __version__, getLogger
+from baltic_seagrass import getLogger
 
+app = typer.Typer()
 log = getLogger(__name__)
 
-parser = argparse.ArgumentParser(
-    description="baltic_seagrass",
-    epilog=f"Version {__version__}",
-)
-parser.add_argument(
-    "--log-level",
-    dest="log_level",
-    type=str,
-    default="INFO",
-    help="Log level. Use DEBUG to debug.",
-)
+
+@app.command()
+def train_quickstart():
+    from baltic_seagrass.scripts.training_script import main
+
+    main("resnet18")
 
 
-def main() -> None:
-    args = parser.parse_args()
-    log.setLevel(args.log_level)
-    log.info(f"Starting CLI with log level {args.log_level}")
+@app.command()
+def bag_of_seagrass_example():
+    from baltic_seagrass.scripts.inference_patched_script import main
+
+    main(save_path="data/patched", max_images=10)
+
+
+def main():
+    app()

@@ -6,7 +6,7 @@ import torch
 class FiftyOneLogger:
     def __init__(
         self,
-        dataset_name: str = "Seegras",
+        dataset_name: str = "seagrass",
         n_classes: int = 2,
     ):
         self.dataset_name = dataset_name

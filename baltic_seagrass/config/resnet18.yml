@@ -5,7 +5,7 @@ model:
   trainable: true
 
 training:
-  batch_size: 32
+  batch_size: 4
   learning_rate: 0.001
   num_epochs: 20
   optimizer: Adam
