@@ -3,7 +3,7 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
-from baltic_seagrass.core.datasets.seegras import SeegrasDataset
+from baltic_seagrass.core.datasets.seagrass import SeagrassDataset
 from baltic_seagrass.logger import getLogger
 
 log = getLogger(__name__)
@@ -19,7 +19,7 @@ def main(input_path: str = "data/Seegras_v1"):
         [Resize((512, 512)), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
     )
 
-    dataset = SeegrasDataset(
+    dataset = SeagrassDataset(
         video_file=str(video_file),
         label_dir=str(label_json_path),
         output_dir=str(output_frames_dir),

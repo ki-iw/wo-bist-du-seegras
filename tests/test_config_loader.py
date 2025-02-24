@@ -10,7 +10,7 @@ from baltic_seagrass.core.config_loader import get_model_config, load_config
 def base_config():
     return {
         "dataset": {
-            "name": "Seegras",
+            "name": "Seagrass",
             "video_file": "data/input_video/trimmed_testvideo.mov",
             "label_dir": "data/input_label/default.json",
         },

@@ -11,8 +11,7 @@ from baltic_seagrass.core.datumaru_processor import DatumaroProcessor
 from baltic_seagrass.core.video_processor import VideoProcessor
 
 
-# TODO change to seagrass
-class SeegrasDataset(Dataset):
+class SeagrassDataset(Dataset):
     def __init__(
         self,
         video_files: list[str],

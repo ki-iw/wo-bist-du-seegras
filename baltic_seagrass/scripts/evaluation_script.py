@@ -2,7 +2,7 @@ import torch
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
 from baltic_seagrass.core.data_loader import create_dataloaders
-from baltic_seagrass.core.datasets.seegras import SeegrasDataset
+from baltic_seagrass.core.datasets.seagrass import SeagrassDataset
 from baltic_seagrass.core.evaluator import Evaluator
 from baltic_seagrass.logger import getLogger
 
@@ -15,7 +15,7 @@ def main(model_name: str, data_path: str = "data/Seegras_v1"):
     )
 
     _, test_loader = create_dataloaders(
-        dataset_class=SeegrasDataset,
+        dataset_class=SeagrassDataset,
         dataset_dir=data_path,
         transform=transforms,
         batch_size=4,

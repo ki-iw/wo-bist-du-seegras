@@ -6,7 +6,7 @@ from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
 # from baltic_seagrass import config
 from baltic_seagrass.core.data_loader import create_dataloaders
-from baltic_seagrass.core.datasets.seegras import SeegrasDataset
+from baltic_seagrass.core.datasets.seagrass import SeagrassDataset
 from baltic_seagrass.core.fiftyone_logger import FiftyOneLogger
 from baltic_seagrass.core.model_factory import ModelFactory
 from baltic_seagrass.logger import getLogger
@@ -24,7 +24,7 @@ def main(save_path="data/Seegras_v1/patched_preds", max_images=10):
     )
 
     _, test_loader = create_dataloaders(
-        dataset_class=SeegrasDataset,
+        dataset_class=SeagrassDataset,
         transform=transform,
         batch_size=1,
         train_test_ratio=0.8,
