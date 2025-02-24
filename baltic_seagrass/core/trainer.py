@@ -103,8 +103,13 @@ class Trainer:
 
                 checkpoint_path = os.path.join(model_checkpoint_dir, f"{model_name}_{epoch + 1}.pth")
                 self.model_factory.save_checkpoint(self.model, self.optimizer, checkpoint_path, epoch + 1)
-
-                self.best_checkpoint = checkpoint_path if f1_score > self.best_f1_score else self.best_checkpoint
                 tqdm.write(f"Model checkpoint saved at {checkpoint_path}")
+
+                if f1_score > self.best_f1_score:
+                    self.best_checkpoint = checkpoint_path
+                    self.best_f1_score = f1_score
+
+                    checkpoint_path = os.path.join(model_checkpoint_dir, f"{model_name}_best-checkpoint.pth")
+                    self.model_factory.save_checkpoint(self.model, self.optimizer, checkpoint_path, epoch + 1)
 
             self.current_epoch += 1

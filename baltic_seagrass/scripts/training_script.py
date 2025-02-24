@@ -2,6 +2,7 @@ import warnings
 
 from torchvision.transforms import Compose, Normalize, Resize, ToTensor
 
+from baltic_seagrass import logger
 from baltic_seagrass.core.config_loader import get_model_config
 from baltic_seagrass.core.data_loader import create_dataloaders
 from baltic_seagrass.core.datasets.seegras import SeegrasDataset
@@ -30,19 +31,20 @@ def main(model_name: str):
 
     trainer.train()
 
-    # final evaluation with latest model
+    # latest model evaluation only to add to fiftyone!
+    logger.info("Evaluating latest model!")
     trainer.evaluator.save_fiftyone = True
     trainer.evaluator.fiftyone_logger = FiftyOneLogger("Latest model")
 
     trainer.evaluator.run_evaluation(model=trainer.model, dataloader=trainer.test_loader)
 
-    # final evaluation with best model
+    logger.info("Evaluating model with best F1 Score!")
     evaluator = Evaluator(
         model_name=model_name, checkpoint_path=trainer.best_checkpoint, n_classes=trainer.model.n_classes
     )
     evaluator.save_fiftyone = True
     evaluator.fiftyone_logger = FiftyOneLogger("Best model")
-    evaluator.run_evaluation(model=trainer.model, dataloader=trainer.test_loader)
+    evaluator.run_evaluation(dataloader=trainer.test_loader)
 
     evaluator.fiftyone_logger.visualize()
 

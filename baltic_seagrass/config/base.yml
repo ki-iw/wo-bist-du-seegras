@@ -7,8 +7,8 @@ dataset:
     - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_14to16.MP4"
     - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_10to12.MP4"
     - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_12to14.MP4"
-  annotations_dir: "tmp/annotations" # Directory to store annotations
-  frames_dir: "tmp/frames" # Directory where extracted frames are written
+  annotations_dir: "data/annotations" # Directory to store annotations
+  frames_dir: "data/frames" # Directory where extracted frames are written
 
 evaluation:
   batch_size: 16
@@ -18,4 +18,4 @@ checkpoint:
   dir: "data/model_checkpoints"
 
 fiftyone:
-  dataset_dir: "tmp/fiftyone"
+  dataset_dir: "data/fiftyone"

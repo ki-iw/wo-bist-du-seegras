@@ -100,4 +100,4 @@ def main(save_path="data/Seegras_v1/patched_preds", max_images=10):
 
 
 if __name__ == "__main__":
-    main(save_path="tmp/patched", max_images=-1)
+    main(save_path="data/patched", max_images=-1)

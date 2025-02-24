@@ -164,11 +164,15 @@ cython_debug/
 # Exclude vscode config files
 .vscode
 
-# Exclude .DS_Store files from being added
 .DS_Store
 
 # Project specific
-data/*
+data/annotations/*
+data/model_checkpoints
+data/frames/*
+data/fiftyone
 weights/
 tmp/
+!data/annotations/example-datumaru.json
+!data/frames/example-datumaru
 !.gitkeep
