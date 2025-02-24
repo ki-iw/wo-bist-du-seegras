@@ -167,9 +167,10 @@ cython_debug/
 .DS_Store
 
 # Project specific
-data/annotations/*
+# data/annotations/*
 data/model_checkpoints
 data/frames/*
+data/patched
 data/fiftyone
 weights/
 tmp/

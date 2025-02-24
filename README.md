@@ -18,6 +18,30 @@ To get started, let's create a Conda environment, and install dependencies into 
     ```bash
     $ make install
     ```
+4. Quick check whether everything has been installed as expected. Following will trigger the unit test execution:
+    ```bash
+    $ make test
+    ```
+
+## Quickstart
+### Training
+Run:
+```
+baltic_seagrass train-quickstart
+```
+This will start a quickstart of a training run with 20 epochs as defined in the [corresponding resnet18 config file](./baltic_seagrass/config/resnet18.yml) on the dataset you provide in the `dataset` fields of the [base.yml](./baltic_seagrass/config/base.yml). At the End of the run a fiftyone server is started highlighting the results of the evaluation on the testset. Checkpoints are written to `data/model_checkpoints` directory.
+
+### Inference
+### Bag of Seagrass Inference
+Run:
+```
+baltic_seagrass bag-of-seagrass-example
+```
+This will create a `data/patched` directory and run the bag of seagrass inference on 4 frames loaded from the videos referenced in [base.yml](./baltic_seagrass/config/base.yml). After the execution, a fiftyone server is started where you can inspect the results in your browser.
+
+### Behaviour
+
+### Configuration
 
 ## Repository Structure
 
@@ -52,7 +76,7 @@ This is the main directory containing the productive code and key scripts for th
 The data processing pipeline is as follows:
 1. **Video and Label Files**: Given a video file and a label JSON file (currently in Datumaru format), we construct a dataset by processing the labels (`datumaru_processor.py`) and extracting relevant frames from the video (`video_processor.py`).
 2. **Dataset Organization**: Each video is treated as a separate dataset (though in the future, there may be an option to combine frames from multiple videos into a single dataset).
-3. **Dataset and DataLoader Creation**: The `datasets/seegras.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
+3. **Dataset and DataLoader Creation**: The `datasets/seagrass.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
 
 
 ## Running

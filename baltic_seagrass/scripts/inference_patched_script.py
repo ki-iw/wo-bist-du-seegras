@@ -23,6 +23,8 @@ def main(save_path="data/Seegras_v1/patched_preds", max_images=10):
         [Resize((2048, 2048)), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
     )
 
+    os.makedirs(save_path, exist_ok=True)
+
     _, test_loader = create_dataloaders(
         dataset_class=SeagrassDataset,
         transform=transform,

@@ -17,7 +17,7 @@ def train_quickstart():
 def bag_of_seagrass_example():
     from baltic_seagrass.scripts.inference_patched_script import main
 
-    main(save_path="data/patched", max_images=10)
+    main(save_path="data/patched", max_images=4)
 
 
 def main():
