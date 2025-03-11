@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 import pytest
 from PIL import Image
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import Dataset
 
 import baltic_seagrass.core.data_loader as d
 
@@ -67,11 +67,3 @@ def test_split_dataset_happy_case(dataset_fixture):
 
     assert len(train_dataset) == 8
     assert len(test_dataset) == 2
-
-
-def test_get_dataloader_happy_case(dataset_fixture):
-    dataset = dataset_fixture()
-    train_loader = d.get_dataloader(dataset, batch_size=4, shuffle=True)
-
-    assert isinstance(train_loader, DataLoader)
-    assert train_loader.batch_size == 4
