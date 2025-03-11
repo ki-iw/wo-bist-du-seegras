@@ -10,7 +10,6 @@ from baltic_seagrass.core.evaluator import Evaluator
 from baltic_seagrass.core.fiftyone_logger import FiftyOneLogger
 from baltic_seagrass.core.trainer import Trainer
 
-# from baltic_seagrass import config
 warnings.filterwarnings("ignore", category=UserWarning, message="The reduce argument of torch.scatter")
 
 

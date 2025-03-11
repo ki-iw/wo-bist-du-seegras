@@ -5,7 +5,6 @@ import torch.nn as nn
 
 from baltic_seagrass.core.models.bag_of_seagrass import SeabagEnsemble, SeaCLIPModel, SeaFeatsModel
 from baltic_seagrass.core.models.binary_resnet import BinaryResNet18
-from baltic_seagrass.core.models.grounding_dino import GroundingDinoClassifier
 from baltic_seagrass.logger import getLogger
 
 log = getLogger(__name__)
@@ -31,8 +30,6 @@ class ModelFactory:
             sea_feats = SeaFeatsModel(n_classes=n_classes, **kwargs)
             sea_clip = SeaCLIPModel(n_classes=n_classes, **kwargs)
             model = SeabagEnsemble(sea_feats, sea_clip, self.device)
-        elif model_name == "grounding_dino":
-            model = GroundingDinoClassifier(self.device)
         else:
             raise ValueError
 

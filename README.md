@@ -39,9 +39,9 @@ baltic_seagrass bag-of-seagrass-example
 ```
 This will create a `data/patched` directory and run the bag of seagrass inference on 4 frames loaded from the videos referenced in [base.yml](./baltic_seagrass/config/base.yml). After the execution, a fiftyone server is started where you can inspect the results in your browser.
 
-### Behaviour
+<!-- ### Behaviour
 
-### Configuration
+### Configuration -->
 
 ## Repository Structure
 
@@ -54,7 +54,6 @@ This is the main directory containing the productive code and key scripts for th
     - **`models/`**: Contains scripts for each model class. Currently, three models are implemented:
         - **`BinaryResnet18`**: A basic implementation of a PyTorch ResNet18 model with a binary output layer, trained using BinaryCrossEntropy loss.
         - **`BagOfSeagrass`**: Includes three separate models: SeaCLIP, SeaFeats, and an ensemble of both. These models can output a four-class result (background and three types of seagrass) or a binary classification.
-        - **`GroundingDINO`**: Implementation of GroundingDINO, adjusted to the expected output format of the project. The bounding box output is post-processed to predict binary classification. This model is not finetunable.
     - **`datasets/`**: Contains scripts for building a PyTorch `Dataset` object from images and labels (processed using `datumaru_processor.py` and `video_processor.py`).
     - **`config_loader.py`**: Loads and processes the YAML configuration files.
     - **`data_loader.py`**: Constructs a PyTorch `DataLoader` object given a `Dataset` object (with training and test splits).
@@ -64,9 +63,9 @@ This is the main directory containing the productive code and key scripts for th
     - **`video_processor.py`**: Processes video files by extracting relevant frames (based on labels) and applying basic transformations.
 
 - **`scripts/`**: Contains scripts for interacting with the core functionality of the repository.
-    - **`dataloader_script.py`**: Preprocesses a video and its associated label JSON file, extracting frames and creating the appropriate folder structure for data.
     - **`evaluation_script.py`**: Evaluates a trained model on a dataset (created by `dataloader_script.py`), and generates evaluation metrics.
     - **`training_script.py`**: Trains a model on a given dataset folder and evaluates it periodically.
+    - **`inference_patched_script.py`** Runs a bag-of-seagrass inference on a given Dataset and highlights detected classes for each patch of a frame as described in the [bag-of-seagrass](https://github.com/sgraine/bag-of-seagrass) repository.
 
 - **`config/`**: Contains configuration files in YAML format for training, evaluation, and dataset selection.
     - **`base.yml`**: Base configuration shared by all models, containing parameters for evaluation and dataset settings.
@@ -74,20 +73,8 @@ This is the main directory containing the productive code and key scripts for th
 
 ### Data Processing Workflow
 The data processing pipeline is as follows:
-1. **Video and Label Files**: Given a video file and a label JSON file (currently in Datumaru format), we construct a dataset by processing the labels (`datumaru_processor.py`) and extracting relevant frames from the video (`video_processor.py`).
-2. **Dataset Organization**: Each video is treated as a separate dataset (though in the future, there may be an option to combine frames from multiple videos into a single dataset).
-3. **Dataset and DataLoader Creation**: The `datasets/seagrass.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
-
-
-## Running
-
-The project includes scripts to perform key tasks, which are located in the `scripts` subfolder:
-
-- **Training**: Use `training_script.py` to handle data loading, model training, and checkpointing.
-- **Evaluation**: Use `evaluation_script.py` to evaluate trained models and generate metrics such as accuracy and F1 score.
-- **Data Loading**: Use `dataloader_script.py` to preprocess and load data.
-
-These scripts ensure the project is modular, reproducible, and easy to extend.
+1. **Video and Label Files**: Given a list of video files and an annotations directory containing JSON files (currently in Datumaru format), we construct a dataset by processing the labels (`datumaru_processor.py`) and extracting relevant frames from the video (`video_processor.py`). The video filenames and JSON filenames inside the annotations directory must match. Relevant frames are indicated by a present label inside the corresponding field `annotations` of datumaro format. The possible categories we used during the labeling phase are `background` or `seagrass`. If no such label is present in the frame then it is regarded as invalid and is thus skipped.
+2. **Dataset and DataLoader Creation**: The `datasets/seagrass.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
 
 
 ## Development
