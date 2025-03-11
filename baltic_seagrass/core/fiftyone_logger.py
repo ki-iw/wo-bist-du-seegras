@@ -49,10 +49,11 @@ class FiftyOneLogger:
 
         sample = fo.Sample(filepath=image_path)
 
-        label_str = "seagrass" if label == 0 else "background"
-        prediction_str = "seagrass" if prediction == 0 else "background"
+        if label != -1:
+            label_str = "seagrass" if label == 0 else "background"
+            sample["ground_truth"] = fo.Classification(label=label_str)
 
-        sample["ground_truth"] = fo.Classification(label=label_str)
+        prediction_str = "seagrass" if prediction == 0 else "background"
         sample["predictions"] = fo.Classification(label=prediction_str)
 
         self.dataset.add_sample(sample, expand_schema=True)

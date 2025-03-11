@@ -12,10 +12,6 @@ def split_dataset(dataset, train_test_ratio: float):
     return random_split(dataset, [train_size, test_size])
 
 
-def get_dataloader(dataset, batch_size: int, shuffle: bool):
-    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
-
-
 def create_dataloaders(
     dataset_class,
     transform: Optional[Compose] = None,  # noqa: UP007
@@ -32,7 +28,7 @@ def create_dataloaders(
 
     train_dataset, test_dataset = split_dataset(dataset, train_test_ratio)
 
-    train_loader = get_dataloader(train_dataset, batch_size, shuffle)
-    test_loader = get_dataloader(test_dataset, batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size, shuffle)
+    test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
 
     return train_loader, test_loader
