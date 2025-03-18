@@ -32,6 +32,15 @@ baltic_seagrass train-quickstart
 This will start a quickstart of a training run with 20 epochs as defined in the [corresponding resnet18 config file](./baltic_seagrass/config/resnet18.yml) on the dataset you provide in the `dataset` fields of the [base.yml](./baltic_seagrass/config/base.yml). At the End of the run a fiftyone server is started highlighting the results of the evaluation on the testset. Checkpoints are written to `data/model_checkpoints` directory.
 
 ### Inference
+### Classifier Inference using trained model
+Run:
+```
+baltic_seagrass inference-on-video-example
+```
+For argument details run `baltic_seagrass inference-on-video-example --help`.
+
+This will execute an inference run on a video defined via `--video-file`. After the run a fiftyone server is started, highlighting the classified images.
+
 ### Bag of Seagrass Inference
 Run:
 ```
