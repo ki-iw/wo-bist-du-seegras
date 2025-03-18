@@ -14,7 +14,7 @@ from baltic_seagrass.logger import getLogger
 log = getLogger(__name__)
 
 
-def main(video_file, save_path, weights_path, max_images=10, skip=100):
+def main(video_file, save_path, weights_path, skip=100):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     transforms = Compose(
@@ -42,10 +42,9 @@ def main(video_file, save_path, weights_path, max_images=10, skip=100):
             cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
             ret, frame = cap.read()
 
-            if not ret:  # If video ends unexpectedly, break the loop
+            if not ret:
                 continue
 
-            # TODO is this necessary?
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             pil_frame = Image.fromarray(frame)
 
@@ -70,5 +69,4 @@ if __name__ == "__main__":
         video_file="/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_14to16.MP4",
         save_path="data/inference_results",
         weights_path="data/model_checkpoints/resnet18/seagrass/resnet18_best-checkpoint.pth",
-        max_images=4,
     )
