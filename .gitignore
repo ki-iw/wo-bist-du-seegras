@@ -172,6 +172,7 @@ data/model_checkpoints
 data/frames/*
 data/patched
 data/fiftyone
+data/inference_results
 weights/
 tmp/
 !data/annotations/example-datumaru.json
