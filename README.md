@@ -82,7 +82,7 @@ This is the main directory containing the productive code and key scripts for th
 
 ### Data Processing Workflow
 The data processing pipeline is as follows:
-1. **Video and Label Files**: Given a list of video files and an annotations directory containing JSON files (currently in Datumaru format), we construct a dataset by processing the labels (`datumaru_processor.py`) and extracting relevant frames from the video (`video_processor.py`). The video filenames and JSON filenames inside the annotations directory must match. Relevant frames are indicated by a present label inside the corresponding field `annotations` of datumaro format. The possible categories we used during the labeling phase are `background` or `seagrass`. If no such label is present in the frame then it is regarded as invalid and is thus skipped.
+1. **Video and Label Files**: Given a list of video files and an annotations directory containing JSON files (currently in Datumaru format), we construct a dataset by processing the labels (`datumaru_processor.py`) and extracting relevant frames from the video (`video_processor.py`). The video filenames and JSON filenames inside the annotations directory must match. Relevant frames are indicated by a present label inside the corresponding field `annotations` of datumaro format. The categories we defined during the labeling phase are `background` or `seagrass`. If no such label is present in the frame then it is regarded as invalid and is thus skipped.
 2. **Dataset and DataLoader Creation**: The `datasets/seagrass.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
 
 
