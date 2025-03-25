@@ -86,6 +86,16 @@ The data processing pipeline is as follows:
 2. **Dataset and DataLoader Creation**: The `datasets/seagrass.py` and `video_processor.py` scripts are used to create the `Dataset` and `DataLoader` objects that are compatible with PyTorch for training, inference, and evaluation.
 
 
+## Exporting Datasets from CVAT
+1. Go to https://cvat.ki-ideenwerkstatt.de/tasks
+
+2. Click on righthand `Actions` menu of the desired task and click `Export task dataset`. The task should correspond to a videosnippet imported for annotation.
+![alt text](assets/image.png)
+
+3. Select `Datumaro` export format from dropdown menu and click ok. After some seconds a popup window should show up leading you to a download link
+
+4. Place the exported json file into the `data/annotations` directory and give it the same name as the corresponding video snippet. All videofiles placed inside [video_files field](./baltic_seagrass/config/base.yml) will be taken as source for training runs and thus the annotation jsons must match the names of the corresponding videos.
+
 ## Development
 Some tasks need to be done repeatedly.
 
@@ -94,6 +104,7 @@ Use `poetry` to add new dependencies to the project:
 ```bash
 $ poetry add [package-name]
 ```
+
 
 ### Running tests
 Run all unit and integration tests, and print a coverage report:
