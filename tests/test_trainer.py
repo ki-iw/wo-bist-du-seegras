@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from tests.utils import create_data_loader
 from baltic_seagrass.core.trainer import Trainer
+from tests.utils import create_data_loader
 
 
 @pytest.fixture
@@ -44,9 +44,7 @@ def test_trainer_train_happy_case_integration(config_path, dummy_train_loader, d
     assert trainer.current_epoch == 1
 
     model_checkpoint_dir = (
-        Path(trainer.config["checkpoint"]["dir"])
-        / trainer.config["model"]["model_name"]
-        / trainer.config["dataset"]["name"]
+        Path(trainer.config.checkpoint.dir) / trainer.config.model.model_name / trainer.config.training_data.name
     )
     checkpoint_files = list(model_checkpoint_dir.iterdir())
     assert len(checkpoint_files) > 0

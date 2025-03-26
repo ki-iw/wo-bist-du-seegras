@@ -16,6 +16,15 @@ def train_quickstart():
 
 
 @app.command()
+def evaluation_example():
+    from baltic_seagrass.scripts.evaluation_script import main
+
+    model_name = "resnet18"
+    checkpoint = "data/model_checkpoints/resnet18/seagrass/resnet18_best-checkpoint.pth"
+    main(model_name, checkpoint)
+
+
+@app.command()
 def bag_of_seagrass_example(save_path="data/patched", max_images=4):
     from baltic_seagrass.scripts.inference_patched_script import main
 

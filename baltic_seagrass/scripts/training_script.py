@@ -23,7 +23,7 @@ def main(model_name: str):
         transform=transforms,
         batch_size=model_config.training.batch_size,
         train_test_ratio=0.8,
-        shuffle=True,
+        shuffle=model_config.training.shuffle,
     )
 
     trainer = Trainer(model_name=model_name, train_loader=train_loader, test_loader=test_loader, checkpoint_path=None)
@@ -39,7 +39,7 @@ def main(model_name: str):
 
     logger.info("Evaluating model with best F1 Score!")
     evaluator = Evaluator(
-        model_name=model_name, checkpoint_path=trainer.best_checkpoint, n_classes=trainer.model.n_classes
+        model_name=model_name, checkpoint_path=trainer.best_checkpoint, n_classes=model_config.model.n_classes
     )
     evaluator.save_fiftyone = True
     evaluator.fiftyone_logger = FiftyOneLogger("Best model")
