@@ -3,6 +3,9 @@
 A project to train, evaluate and run vision models to detect seagrass in images and video frames.
 The code for this project has been developed through a collaborative effort between WWF, [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de) and [Birds on Mars](https://birdsonmars.com).
 
+<!-- ![alt text](assets/BoM_Logo_Signatur_groß.jpg) -->
+<img src="assets/BoM_Logo_Signatur_groß.jpg" alt="Description" width="300"/>
+
 > This repository partially uses provided code and models from the [bag of seagrass](https://github.com/sgraine/bag-of-seagrass) project.
 
 ## Setup
