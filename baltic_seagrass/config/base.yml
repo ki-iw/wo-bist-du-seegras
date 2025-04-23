@@ -1,7 +1,7 @@
 # Common settings for all models
 log_level: DEBUG
 
-dataset:
+training_data:
   name: seagrass
   video_files: # List of video files to process
     - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_14to16.MP4"
@@ -9,6 +9,12 @@ dataset:
     - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_12to14.MP4"
   annotations_dir: "data/annotations" # Directory to store annotations
   frames_dir: "data/frames" # Directory where extracted frames are written
+
+evaluation_data:
+  video_files: # List of video files to evaluate on
+    - "/mnt/data/ZUG-Seegras/videos/DJI_20240923162615_0002_D_compressed50_14to16.MP4"
+  annotations_dir: "data/annotations" # Directory to store annotations
+  frames_dir: "data/eval_frames" # Directory where extracted frames are written
 
 evaluation:
   batch_size: 16

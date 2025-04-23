@@ -170,6 +170,7 @@ cython_debug/
 # data/annotations/*
 data/model_checkpoints
 data/frames/*
+data/eval_frames
 data/patched
 data/fiftyone
 data/inference_results

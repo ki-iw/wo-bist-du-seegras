@@ -19,10 +19,19 @@ def create_dataloaders(
     train_test_ratio: float = 0.8,
     shuffle: bool = True,
 ) -> tuple[DataLoader, DataLoader]:
+    video_files = config.training_data.video_files
+    annotations_dir = config.training_data.annotations_dir
+    frames_dir = config.training_data.frames_dir
+    # if train_test_ratio is 0, only test loader is desired and evaluation is done on all data
+    if train_test_ratio == 0:
+        video_files = config.evaluation_data.video_files
+        annotations_dir = config.evaluation_data.annotations_dir
+        frames_dir = config.evaluation_data.frames_dir
+
     dataset = dataset_class(
-        video_files=config.dataset.video_files,
-        annotations_dir=config.dataset.annotations_dir,  # directory containing json files named after the video files
-        frames_dir=config.dataset.frames_dir,
+        video_files=list(video_files),
+        annotations_dir=annotations_dir,  # directory containing json files named after the video files
+        frames_dir=frames_dir,
         transform=transform,
     )
 

@@ -69,10 +69,10 @@ class Trainer:
         raise NotImplementedError(f"Optimizer '{optimizer_name}' is not implemented.")
 
     def train(self, n_eval: int = 5):
-        num_epochs = self.config["training"]["num_epochs"]
-        model_name = self.config["model"]["model_name"]
-        dataset_name = self.config["dataset"]["name"]
-        checkpoint_dir = self.config["checkpoint"]["dir"]
+        num_epochs = self.config.training.num_epochs
+        model_name = self.config.model.model_name
+        dataset_name = self.config.training_data.name
+        checkpoint_dir = self.config.checkpoint.dir
 
         model_checkpoint_dir = os.path.join(checkpoint_dir, model_name, dataset_name)
         os.makedirs(model_checkpoint_dir, exist_ok=True)
