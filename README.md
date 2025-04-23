@@ -3,7 +3,7 @@
 A project to train, evaluate and run vision models to detect seagrass in images and video frames.
 The code for this project has been developed through a collaborative effort between WWF, [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de) and [Birds on Mars](https://birdsonmars.com).
 
-<a href="https://birdsonmars.com">
+<a href="https://birdsonmars.com" target="_blank" rel="noopener noreferrer">
   <img src="assets/BoM_Logo_Signatur_groß.jpg" alt="Birds On Mars" width="300">
 </a>
 
