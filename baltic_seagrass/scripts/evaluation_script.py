@@ -32,9 +32,3 @@ def main(model_name: str, checkpoint: str):
     evaluator.run_evaluation(dataloader=test_loader)
 
     evaluator.fiftyone_logger.visualize()
-
-
-if __name__ == "__main__":
-    model_name = "resnet18"
-    checkpoint = "data/model_checkpoints/resnet18/seagrass/resnet18_best-checkpoint.pth"
-    main(model_name, checkpoint)

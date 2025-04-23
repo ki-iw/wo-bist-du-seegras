@@ -1,6 +1,9 @@
 # baltic-seagrass
 
 A project to train, evaluate and run vision models to detect seagrass from images and video files.
+The code for this project has been developed through a collaborative effort between WWF, KI-Ideenwerkstatt and Birds on Mars,.
+
+This repository partially uses provided code and models from the https://github.com/sgraine/bag-of-seagrass repository.
 
 ## Setup
 
@@ -31,6 +34,15 @@ baltic_seagrass train-quickstart
 ```
 This will start a quickstart of a training run with 20 epochs as defined in the [corresponding resnet18 config file](./baltic_seagrass/config/resnet18.yml) on the dataset you provide in the `dataset` fields of the [base.yml](./baltic_seagrass/config/base.yml). At the End of the run a fiftyone server is started highlighting the results of the evaluation on the testset. Checkpoints are written to `data/model_checkpoints` directory.
 
+### Standalone evaluation
+Before you can run the following, you need to have a checkpoint from a previous training run.
+
+```
+baltic_seagrass evaluation-example --checkpoint <path-to-your-checkpoint>
+```
+
+This will execute an evaluation run of the desired checkpoint on evaluation data specified in [base.yml](./baltic_seagrass/config/base.yml). At the End of the run a fiftyone server is started highlighting the results on each image.
+
 ### Inference
 ### Classifier Inference using trained model
 Run:
@@ -47,10 +59,6 @@ Run:
 baltic_seagrass bag-of-seagrass-example
 ```
 This will create a `data/patched` directory and run the bag of seagrass inference on 4 frames loaded from the videos referenced in [base.yml](./baltic_seagrass/config/base.yml). After the execution, a fiftyone server is started where you can inspect the results in your browser.
-
-<!-- ### Behaviour
-
-### Configuration -->
 
 ## Repository Structure
 
@@ -97,7 +105,6 @@ The data processing pipeline is as follows:
 4. Place the exported json file into the `data/annotations` directory and give it the same name as the corresponding video snippet. All videofiles placed inside [video_files field](./baltic_seagrass/config/base.yml) will be taken as source for training runs and thus the annotation jsons must match the names of the corresponding videos.
 
 ## Development
-Some tasks need to be done repeatedly.
 
 ### Adding dependencies
 Use `poetry` to add new dependencies to the project:
@@ -117,5 +124,3 @@ $ make test
 When running the evaluator with the argument `save_fiftyone=True`, the data is saved to a FiftyOne dataset. To view the dataset in the FiftyOne web UI, execute the `fiftyone_logger.py` script.
 
 If you are working on the KI-IW remote machine, you may need to manually forward port `5154` to your local machine. Once the port is forwarded, you can access the FiftyOne web interface by navigating to [http://localhost:5154/](http://localhost:5154/) in your browser.
-
-> Known Issue:
