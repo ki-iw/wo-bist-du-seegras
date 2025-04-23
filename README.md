@@ -1,9 +1,9 @@
 # baltic-seagrass
 
-A project to train, evaluate and run vision models to detect seagrass from images and video files.
-The code for this project has been developed through a collaborative effort between WWF, KI-Ideenwerkstatt and Birds on Mars,.
+A project to train, evaluate and run vision models to detect seagrass in images and video frames.
+The code for this project has been developed through a collaborative effort between WWF, [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de) and [Birds on Mars](https://birdsonmars.com).
 
-This repository partially uses provided code and models from the https://github.com/sgraine/bag-of-seagrass repository.
+> This repository partially uses provided code and models from the https://github.com/sgraine/bag-of-seagrass project.
 
 ## Setup
 
