@@ -1,13 +1,19 @@
-# baltic-seagrass
+# Seagrass detection on RGB data
 
-A project to train, evaluate and run vision models to detect seagrass in images and video frames.
-The code for this project has been developed through a collaborative effort between WWF, [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de) and [Birds on Mars](https://birdsonmars.com).
+A project to train, evaluate and run vision models to detect seagrass in RGB images and video frames. 
 
-<a href="https://birdsonmars.com" target="_blank" rel="noopener noreferrer">
-  <img src="assets/BoM_Logo_Signatur_groß.jpg" alt="Birds On Mars" width="300">
-</a>
+## The idea
 
-> This repository partially uses provided code and models from the [bag of seagrass](https://github.com/sgraine/bag-of-seagrass) project.
+Allow non-specialists to do in-situ data collection with consumer-grade cameras using a simple setup rig on a wide variety of boats (e.g. fishing boats) that could collect video data for training and classification while performing other tasks on sea. 
+
+<img src="assets/overview.png" alt="Baltic Seagrass Project Overview">
+
+## References
+
+> [!NOTE] 
+> This repository partially uses provided code and models from the [bag of seagrass](https://github.com/sgraine/bag-of-seagrass) project. 
+>
+> *Raine, S., Marchant, R., Kusy, B., Maire, F., & Fischer, T. (2024). Image labels are all you need for coarse seagrass segmentation. In Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (pp. 5943-5952)*.
 
 ## Setup
 
@@ -128,3 +134,31 @@ $ make test
 When running the evaluator with the argument `save_fiftyone=True`, the data is saved to a FiftyOne dataset. To view the dataset in the FiftyOne web UI, execute the `fiftyone_logger.py` script.
 
 If you are working on the KI-IW remote machine, you may need to manually forward port `5154` to your local machine. Once the port is forwarded, you can access the FiftyOne web interface by navigating to [http://localhost:5154/](http://localhost:5154/) in your browser.
+
+
+# Collaborators 
+
+The code for this project has been developed through a collaborative effort between [WWF Büro Ostsee](https://www.wwf.de/themen-projekte/projektregionen/ostsee) and [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de), technical implementation by [Birds on Mars](https://birdsonmars.com).
+
+<a href="https://ki-ideenwerkstatt.de" target="_blank" rel="noopener noreferrer">
+  <img src="assets/KI-IW-logo.png" alt="KI Ideenwerkstatt" width="600">
+</a>
+<br>
+<a href="https://www.wwf.de/themen-projekte/projektregionen/ostsee" target="_blank" rel="noopener noreferrer">
+  <img src="assets/wwf.png" alt="WWF" width="100">
+</a>
+<a href="https://birdsonmars.com" target="_blank" rel="noopener noreferrer">
+  <img src="assets/BoM_Logo_Signatur_groß.jpg" alt="Birds On Mars" width="300">
+</a>
+
+An AI initiative by
+
+<a href="https://www.bmuv.de" target="_blank" rel="noopener noreferrer">
+  <img src="assets/bmuv.svg" alt="Bundesministerium für Umwelt, Naturschutz, nukleare Sicherheit und Verbraucherschutz">
+</a>
+
+In the context of
+
+<a href="https://civic-coding.de" target="_blank" rel="noopener noreferrer">
+  <img src="assets/civic.svg" alt="Civic Coding">
+</a>
