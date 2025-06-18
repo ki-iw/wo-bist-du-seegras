@@ -141,7 +141,7 @@ If you are working on the KI-IW remote machine, you may need to manually forward
 The code for this project has been developed through a collaborative effort between [WWF Büro Ostsee](https://www.wwf.de/themen-projekte/projektregionen/ostsee) and [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de), technical implementation by [Birds on Mars](https://birdsonmars.com).
 
 <a href="https://ki-ideenwerkstatt.de" target="_blank" rel="noopener noreferrer">
-  <img src="assets/kiiw.jpg" alt="KI Ideenwerkstatt" width="800">
+  <img src="assets/kiiw.jpg" alt="KI Ideenwerkstatt" width="600">
 </a>
 
 <a href="https://birdsonmars.com" target="_blank" rel="noopener noreferrer">
@@ -151,11 +151,11 @@ The code for this project has been developed through a collaborative effort betw
 An AI initiative by
 
 <a href="https://www.bundesumweltministerium.de/" target="_blank" rel="noopener noreferrer">
-  <img src="assets/bmukn.svg" alt="Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit">
+  <img src="assets/bmukn.svg" alt="Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit" width="300">
 </a>
 
 In the context of
 
 <a href="https://civic-coding.de" target="_blank" rel="noopener noreferrer">
-  <img src="assets/civic.svg" alt="Civic Coding">
+  <img src="assets/civic.svg" alt="Civic Coding" width="300">
 </a>
