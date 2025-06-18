@@ -141,12 +141,9 @@ If you are working on the KI-IW remote machine, you may need to manually forward
 The code for this project has been developed through a collaborative effort between [WWF Büro Ostsee](https://www.wwf.de/themen-projekte/projektregionen/ostsee) and [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de), technical implementation by [Birds on Mars](https://birdsonmars.com).
 
 <a href="https://ki-ideenwerkstatt.de" target="_blank" rel="noopener noreferrer">
-  <img src="assets/KI-IW-logo.png" alt="KI Ideenwerkstatt" width="600">
+  <img src="assets/kiiw.jpg" alt="KI Ideenwerkstatt" width="800">
 </a>
-<br>
-<a href="https://www.wwf.de/themen-projekte/projektregionen/ostsee" target="_blank" rel="noopener noreferrer">
-  <img src="assets/wwf.png" alt="WWF" width="100">
-</a>
+
 <a href="https://birdsonmars.com" target="_blank" rel="noopener noreferrer">
   <img src="assets/BoM_Logo_Signatur_groß.jpg" alt="Birds On Mars" width="300">
 </a>
