@@ -150,8 +150,8 @@ The code for this project has been developed through a collaborative effort betw
 
 An AI initiative by
 
-<a href="https://www.bmuv.de" target="_blank" rel="noopener noreferrer">
-  <img src="assets/bmuv.svg" alt="Bundesministerium für Umwelt, Naturschutz, nukleare Sicherheit und Verbraucherschutz">
+<a href="https://www.bundesumweltministerium.de/" target="_blank" rel="noopener noreferrer">
+  <img src="assets/bmukn.svg" alt="Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit">
 </a>
 
 In the context of
