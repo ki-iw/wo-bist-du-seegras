@@ -140,22 +140,25 @@ If you are working on the KI-IW remote machine, you may need to manually forward
 
 The code for this project has been developed through a collaborative effort between [WWF Büro Ostsee](https://www.wwf.de/themen-projekte/projektregionen/ostsee) and [KI-Ideenwerkstatt](https://www.ki-ideenwerkstatt.de), technical implementation by [Birds on Mars](https://birdsonmars.com).
 
+<p></p>
 <a href="https://ki-ideenwerkstatt.de" target="_blank" rel="noopener noreferrer">
-  <img src="assets/kiiw.jpg" alt="KI Ideenwerkstatt" width="600">
+  <img src="assets/kiiw.jpg" alt="KI Ideenwerkstatt" height="100">
 </a>
-
+<p></p>
+Technical realization
+<br>
 <a href="https://birdsonmars.com" target="_blank" rel="noopener noreferrer">
-  <img src="assets/BoM_Logo_Signatur_groß.jpg" alt="Birds On Mars" width="300">
+  <img src="assets/bom.jpg" alt="Birds On Mars" height="100">
 </a>
-
+<p></p>
 An AI initiative by
-
+<br>
 <a href="https://www.bundesumweltministerium.de/" target="_blank" rel="noopener noreferrer">
-  <img src="assets/bmukn.svg" alt="Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit" width="300">
+  <img src="assets/bmukn.svg" alt="Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit" height="100">
 </a>
-
+<p></p>
 In the context of
-
+<br>
 <a href="https://civic-coding.de" target="_blank" rel="noopener noreferrer">
-  <img src="assets/civic.svg" alt="Civic Coding" width="300">
+  <img src="assets/civic.svg" alt="Civic Coding" height="100">
 </a>
